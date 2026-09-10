@@ -1,0 +1,1294 @@
+-- ============================================================
+-- JEWELRY STORE DATABASE
+-- MySQL 8.x
+-- Spring Boot + JPA/Hibernate + Spring Security/JWT
+--
+-- Thiết kế theo nghiệp vụ / Use Case của hệ thống
+-- Không phụ thuộc vào Class Diagram
+-- ============================================================
+
+DROP DATABASE IF EXISTS jewelry_store;
+
+CREATE DATABASE jewelry_store
+    CHARACTER SET utf8mb4
+    COLLATE utf8mb4_unicode_ci;
+
+USE jewelry_store;
+
+SET NAMES utf8mb4;
+
+
+-- ============================================================
+-- 01. VAI_TRO
+-- ============================================================
+
+CREATE TABLE vai_tro (
+    id BIGINT NOT NULL AUTO_INCREMENT,
+    ten_vai_tro VARCHAR(50) NOT NULL,
+    mo_ta VARCHAR(255) DEFAULT NULL,
+    created_at DATETIME(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
+
+    PRIMARY KEY (id),
+
+    CONSTRAINT uk_vai_tro_ten
+        UNIQUE (ten_vai_tro)
+) ENGINE=InnoDB
+  DEFAULT CHARSET=utf8mb4
+  COLLATE=utf8mb4_0900_ai_ci;
+
+
+-- ============================================================
+-- 02. TAI_KHOAN
+-- Dùng chung cho KHACH_HANG / NHAN_VIEN / QUAN_LY
+-- ============================================================
+
+CREATE TABLE tai_khoan (
+    id BIGINT NOT NULL AUTO_INCREMENT,
+
+    ho_ten VARCHAR(120) NOT NULL,
+
+    email VARCHAR(190) NOT NULL,
+
+    so_dien_thoai VARCHAR(20) DEFAULT NULL,
+
+    ten_dang_nhap VARCHAR(100) NOT NULL,
+
+    mat_khau VARCHAR(255) NOT NULL,
+
+    avatar VARCHAR(500) DEFAULT NULL,
+
+    vai_tro_id BIGINT NOT NULL,
+
+    trang_thai ENUM(
+        'HOAT_DONG',
+        'KHOA'
+    ) NOT NULL DEFAULT 'HOAT_DONG',
+
+    token_version BIGINT NOT NULL DEFAULT 0,
+
+    reset_token_hash VARCHAR(64) DEFAULT NULL,
+
+    reset_token_expires_at DATETIME(6) DEFAULT NULL,
+
+    created_at DATETIME(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
+
+    updated_at DATETIME(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6)
+        ON UPDATE CURRENT_TIMESTAMP(6),
+
+    PRIMARY KEY (id),
+
+    CONSTRAINT uk_tai_khoan_email
+        UNIQUE (email),
+
+    CONSTRAINT uk_tai_khoan_ten_dang_nhap
+        UNIQUE (ten_dang_nhap),
+
+    CONSTRAINT uk_tai_khoan_reset_token
+        UNIQUE (reset_token_hash),
+
+    CONSTRAINT fk_tai_khoan_vai_tro
+        FOREIGN KEY (vai_tro_id)
+        REFERENCES vai_tro(id),
+
+    CONSTRAINT ck_tai_khoan_token_version
+        CHECK (token_version >= 0)
+) ENGINE=InnoDB
+  DEFAULT CHARSET=utf8mb4
+  COLLATE=utf8mb4_0900_ai_ci;
+
+
+-- ============================================================
+-- 03. DIA_CHI
+-- ============================================================
+
+CREATE TABLE dia_chi (
+    id BIGINT NOT NULL AUTO_INCREMENT,
+
+    tai_khoan_id BIGINT NOT NULL,
+
+    ho_ten_nguoi_nhan VARCHAR(120) NOT NULL,
+
+    so_dien_thoai VARCHAR(20) NOT NULL,
+
+    tinh_thanh VARCHAR(255) NOT NULL,
+
+    quan_huyen VARCHAR(255) NOT NULL,
+
+    phuong_xa VARCHAR(255) NOT NULL,
+
+    dia_chi_chi_tiet VARCHAR(500) NOT NULL,
+
+    mac_dinh BOOLEAN NOT NULL DEFAULT FALSE,
+
+    created_at DATETIME(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
+
+    updated_at DATETIME(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6)
+        ON UPDATE CURRENT_TIMESTAMP(6),
+
+    PRIMARY KEY (id),
+
+    CONSTRAINT fk_dia_chi_tai_khoan
+        FOREIGN KEY (tai_khoan_id)
+        REFERENCES tai_khoan(id)
+        ON DELETE CASCADE
+) ENGINE=InnoDB
+  DEFAULT CHARSET=utf8mb4
+  COLLATE=utf8mb4_0900_ai_ci;
+
+
+-- ============================================================
+-- 04. DANH_MUC
+-- Hỗ trợ danh mục cha / con
+-- ============================================================
+
+CREATE TABLE danh_muc (
+    id BIGINT NOT NULL AUTO_INCREMENT,
+
+    ten_danh_muc VARCHAR(120) NOT NULL,
+
+    danh_muc_cha_id BIGINT DEFAULT NULL,
+
+    mo_ta VARCHAR(2000) DEFAULT NULL,
+
+    trang_thai ENUM(
+        'HOAT_DONG',
+        'NGUNG_HOAT_DONG'
+    ) NOT NULL DEFAULT 'HOAT_DONG',
+
+    created_at DATETIME(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
+
+    updated_at DATETIME(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6)
+        ON UPDATE CURRENT_TIMESTAMP(6),
+
+    PRIMARY KEY (id),
+
+    CONSTRAINT uk_danh_muc_ten
+        UNIQUE (ten_danh_muc),
+
+    CONSTRAINT fk_danh_muc_cha
+        FOREIGN KEY (danh_muc_cha_id)
+        REFERENCES danh_muc(id)
+        ON DELETE SET NULL
+) ENGINE=InnoDB
+  DEFAULT CHARSET=utf8mb4
+  COLLATE=utf8mb4_0900_ai_ci;
+
+
+-- ============================================================
+-- 05. THUONG_HIEU
+-- ============================================================
+
+CREATE TABLE thuong_hieu (
+    id BIGINT NOT NULL AUTO_INCREMENT,
+
+    ten_thuong_hieu VARCHAR(120) NOT NULL,
+
+    logo VARCHAR(1000) DEFAULT NULL,
+
+    mo_ta VARCHAR(2000) DEFAULT NULL,
+
+    trang_thai ENUM(
+        'HOAT_DONG',
+        'NGUNG_HOAT_DONG'
+    ) NOT NULL DEFAULT 'HOAT_DONG',
+
+    created_at DATETIME(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
+
+    updated_at DATETIME(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6)
+        ON UPDATE CURRENT_TIMESTAMP(6),
+
+    PRIMARY KEY (id),
+
+    CONSTRAINT uk_thuong_hieu_ten
+        UNIQUE (ten_thuong_hieu)
+) ENGINE=InnoDB
+  DEFAULT CHARSET=utf8mb4
+  COLLATE=utf8mb4_0900_ai_ci;
+
+
+-- ============================================================
+-- 06. GIA_VANG
+-- Lưu lịch sử giá vàng theo ngày
+-- ============================================================
+
+CREATE TABLE gia_vang (
+    id BIGINT NOT NULL AUTO_INCREMENT,
+
+    loai_vang VARCHAR(80) NOT NULL,
+
+    don_vi VARCHAR(30) NOT NULL,
+
+    ngay_ap_dung DATE NOT NULL,
+
+    gia_mua DECIMAL(19,2) NOT NULL,
+
+    gia_ban DECIMAL(19,2) NOT NULL,
+
+    ngay_cap_nhat DATETIME(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
+
+    PRIMARY KEY (id),
+
+    CONSTRAINT uk_gia_vang_loai_ngay
+        UNIQUE (loai_vang, ngay_ap_dung),
+
+    CONSTRAINT ck_gia_vang
+        CHECK (
+            gia_mua > 0
+            AND gia_ban >= gia_mua
+        )
+) ENGINE=InnoDB
+  DEFAULT CHARSET=utf8mb4
+  COLLATE=utf8mb4_0900_ai_ci;
+
+
+-- ============================================================
+-- 07. SAN_PHAM
+-- ============================================================
+
+CREATE TABLE san_pham (
+    id BIGINT NOT NULL AUTO_INCREMENT,
+
+    ma_sku VARCHAR(100) NOT NULL,
+
+    ten_san_pham VARCHAR(200) NOT NULL,
+
+    danh_muc_id BIGINT NOT NULL,
+
+    thuong_hieu_id BIGINT NOT NULL,
+
+    mo_ta VARCHAR(5000) DEFAULT NULL,
+
+    gia DECIMAL(19,2) NOT NULL,
+
+    gia_khuyen_mai DECIMAL(19,2) DEFAULT NULL,
+
+    size VARCHAR(50) DEFAULT NULL,
+
+    mau_sac VARCHAR(80) DEFAULT NULL,
+
+    chat_lieu VARCHAR(100) NOT NULL,
+
+    trong_luong DECIMAL(12,3) DEFAULT NULL,
+
+    da_quy VARCHAR(100) DEFAULT NULL,
+
+    trang_thai ENUM(
+        'DANG_BAN',
+        'NGUNG_BAN'
+    ) NOT NULL DEFAULT 'DANG_BAN',
+
+    created_at DATETIME(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
+
+    updated_at DATETIME(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6)
+        ON UPDATE CURRENT_TIMESTAMP(6),
+
+    PRIMARY KEY (id),
+
+    CONSTRAINT uk_san_pham_sku
+        UNIQUE (ma_sku),
+
+    CONSTRAINT fk_san_pham_danh_muc
+        FOREIGN KEY (danh_muc_id)
+        REFERENCES danh_muc(id),
+
+    CONSTRAINT fk_san_pham_thuong_hieu
+        FOREIGN KEY (thuong_hieu_id)
+        REFERENCES thuong_hieu(id),
+
+    CONSTRAINT ck_san_pham_gia
+        CHECK (gia > 0),
+
+    CONSTRAINT ck_san_pham_gia_km
+        CHECK (
+            gia_khuyen_mai IS NULL
+            OR (
+                gia_khuyen_mai >= 0
+                AND gia_khuyen_mai <= gia
+            )
+        ),
+
+    CONSTRAINT ck_san_pham_trong_luong
+        CHECK (
+            trong_luong IS NULL
+            OR trong_luong >= 0
+        )
+) ENGINE=InnoDB
+  DEFAULT CHARSET=utf8mb4
+  COLLATE=utf8mb4_0900_ai_ci;
+
+
+-- ============================================================
+-- 08. HINH_ANH_SAN_PHAM
+-- ============================================================
+
+CREATE TABLE hinh_anh_san_pham (
+    id BIGINT NOT NULL AUTO_INCREMENT,
+
+    san_pham_id BIGINT NOT NULL,
+
+    duong_dan VARCHAR(1000) NOT NULL,
+
+    la_anh_chinh BOOLEAN NOT NULL DEFAULT FALSE,
+
+    thu_tu INT NOT NULL DEFAULT 0,
+
+    PRIMARY KEY (id),
+
+    CONSTRAINT fk_anh_san_pham
+        FOREIGN KEY (san_pham_id)
+        REFERENCES san_pham(id)
+        ON DELETE CASCADE
+) ENGINE=InnoDB
+  DEFAULT CHARSET=utf8mb4
+  COLLATE=utf8mb4_0900_ai_ci;
+
+
+-- ============================================================
+-- 09. BIEN_THE_SAN_PHAM
+-- ============================================================
+
+CREATE TABLE bien_the_san_pham (
+    id BIGINT NOT NULL AUTO_INCREMENT,
+
+    san_pham_id BIGINT NOT NULL,
+
+    sku VARCHAR(100) NOT NULL,
+
+    size VARCHAR(50) DEFAULT NULL,
+
+    mau_sac VARCHAR(80) DEFAULT NULL,
+
+    gia DECIMAL(19,2) NOT NULL,
+
+    gia_khuyen_mai DECIMAL(19,2) DEFAULT NULL,
+
+    trang_thai ENUM(
+        'DANG_BAN',
+        'NGUNG_BAN'
+    ) NOT NULL DEFAULT 'DANG_BAN',
+
+    created_at DATETIME(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
+
+    updated_at DATETIME(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6)
+        ON UPDATE CURRENT_TIMESTAMP(6),
+
+    PRIMARY KEY (id),
+
+    CONSTRAINT uk_bien_the_sku
+        UNIQUE (sku),
+
+    CONSTRAINT fk_bien_the_san_pham
+        FOREIGN KEY (san_pham_id)
+        REFERENCES san_pham(id)
+        ON DELETE CASCADE,
+
+    CONSTRAINT ck_bien_the_gia
+        CHECK (gia > 0),
+
+    CONSTRAINT ck_bien_the_gia_km
+        CHECK (
+            gia_khuyen_mai IS NULL
+            OR (
+                gia_khuyen_mai >= 0
+                AND gia_khuyen_mai <= gia
+            )
+        )
+) ENGINE=InnoDB
+  DEFAULT CHARSET=utf8mb4
+  COLLATE=utf8mb4_0900_ai_ci;
+
+
+-- ============================================================
+-- 10. TON_KHO
+-- ============================================================
+
+CREATE TABLE ton_kho (
+    id BIGINT NOT NULL AUTO_INCREMENT,
+
+    bien_the_id BIGINT NOT NULL,
+
+    so_luong_ton INT NOT NULL DEFAULT 0,
+
+    so_luong_dat INT NOT NULL DEFAULT 0,
+
+    nguong_canh_bao INT NOT NULL DEFAULT 5,
+
+    ngay_cap_nhat DATETIME(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6)
+        ON UPDATE CURRENT_TIMESTAMP(6),
+
+    PRIMARY KEY (id),
+
+    CONSTRAINT uk_ton_kho_bien_the
+        UNIQUE (bien_the_id),
+
+    CONSTRAINT fk_ton_kho_bien_the
+        FOREIGN KEY (bien_the_id)
+        REFERENCES bien_the_san_pham(id)
+        ON DELETE CASCADE,
+
+    CONSTRAINT ck_ton_kho
+        CHECK (
+            so_luong_ton >= 0
+            AND so_luong_dat >= 0
+            AND so_luong_dat <= so_luong_ton
+        )
+) ENGINE=InnoDB
+  DEFAULT CHARSET=utf8mb4
+  COLLATE=utf8mb4_0900_ai_ci;
+
+
+-- ============================================================
+-- 11. LICH_SU_KHO
+-- ============================================================
+
+CREATE TABLE lich_su_kho (
+    id BIGINT NOT NULL AUTO_INCREMENT,
+
+    bien_the_id BIGINT NOT NULL,
+
+    tai_khoan_id BIGINT DEFAULT NULL,
+
+    loai ENUM(
+        'DIEU_CHINH',
+        'GIAI_PHONG',
+        'GIAO_HANG',
+        'GIU_HANG',
+        'NHAP',
+        'XUAT'
+    ) NOT NULL,
+
+    thay_doi_ton INT NOT NULL DEFAULT 0,
+
+    thay_doi_dat INT NOT NULL DEFAULT 0,
+
+    ton_sau INT NOT NULL,
+
+    dat_sau INT NOT NULL,
+
+    ly_do VARCHAR(500) NOT NULL,
+
+    thoi_gian DATETIME(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
+
+    PRIMARY KEY (id),
+
+    CONSTRAINT fk_lich_su_kho_bien_the
+        FOREIGN KEY (bien_the_id)
+        REFERENCES bien_the_san_pham(id),
+
+    CONSTRAINT fk_lich_su_kho_tai_khoan
+        FOREIGN KEY (tai_khoan_id)
+        REFERENCES tai_khoan(id)
+        ON DELETE SET NULL,
+
+    CONSTRAINT ck_lich_su_kho
+        CHECK (
+            ton_sau >= 0
+            AND dat_sau >= 0
+            AND dat_sau <= ton_sau
+        )
+) ENGINE=InnoDB
+  DEFAULT CHARSET=utf8mb4
+  COLLATE=utf8mb4_0900_ai_ci;
+
+
+-- ============================================================
+-- 12. GIO_HANG
+-- ============================================================
+
+CREATE TABLE gio_hang (
+    id BIGINT NOT NULL AUTO_INCREMENT,
+
+    tai_khoan_id BIGINT NOT NULL,
+
+    tong_tien DECIMAL(19,2) NOT NULL DEFAULT 0,
+
+    ngay_tao DATETIME(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
+
+    ngay_cap_nhat DATETIME(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6)
+        ON UPDATE CURRENT_TIMESTAMP(6),
+
+    PRIMARY KEY (id),
+
+    CONSTRAINT uk_gio_hang_tai_khoan
+        UNIQUE (tai_khoan_id),
+
+    CONSTRAINT fk_gio_hang_tai_khoan
+        FOREIGN KEY (tai_khoan_id)
+        REFERENCES tai_khoan(id)
+        ON DELETE CASCADE,
+
+    CONSTRAINT ck_gio_hang_tong_tien
+        CHECK (tong_tien >= 0)
+) ENGINE=InnoDB
+  DEFAULT CHARSET=utf8mb4
+  COLLATE=utf8mb4_0900_ai_ci;
+
+
+-- ============================================================
+-- 13. CHI_TIET_GIO_HANG
+-- ============================================================
+
+CREATE TABLE chi_tiet_gio_hang (
+    id BIGINT NOT NULL AUTO_INCREMENT,
+
+    gio_hang_id BIGINT NOT NULL,
+
+    bien_the_id BIGINT NOT NULL,
+
+    so_luong INT NOT NULL DEFAULT 1,
+
+    don_gia DECIMAL(19,2) NOT NULL,
+
+    thanh_tien DECIMAL(19,2) NOT NULL,
+
+    da_chon BOOLEAN NOT NULL DEFAULT FALSE,
+
+    PRIMARY KEY (id),
+
+    CONSTRAINT uk_chi_tiet_gio_hang
+        UNIQUE (gio_hang_id, bien_the_id),
+
+    CONSTRAINT fk_ct_gio_hang
+        FOREIGN KEY (gio_hang_id)
+        REFERENCES gio_hang(id)
+        ON DELETE CASCADE,
+
+    CONSTRAINT fk_ct_gio_hang_bien_the
+        FOREIGN KEY (bien_the_id)
+        REFERENCES bien_the_san_pham(id),
+
+    CONSTRAINT ck_ct_gio_hang
+        CHECK (
+            so_luong BETWEEN 1 AND 1000
+            AND don_gia > 0
+            AND thanh_tien = so_luong * don_gia
+        )
+) ENGINE=InnoDB
+  DEFAULT CHARSET=utf8mb4
+  COLLATE=utf8mb4_0900_ai_ci;
+
+
+-- ============================================================
+-- 14. YEU_THICH
+-- ============================================================
+
+CREATE TABLE yeu_thich (
+    tai_khoan_id BIGINT NOT NULL,
+
+    san_pham_id BIGINT NOT NULL,
+
+    ngay_them DATETIME(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
+
+    PRIMARY KEY (tai_khoan_id, san_pham_id),
+
+    CONSTRAINT fk_yeu_thich_tai_khoan
+        FOREIGN KEY (tai_khoan_id)
+        REFERENCES tai_khoan(id)
+        ON DELETE CASCADE,
+
+    CONSTRAINT fk_yeu_thich_san_pham
+        FOREIGN KEY (san_pham_id)
+        REFERENCES san_pham(id)
+        ON DELETE CASCADE
+) ENGINE=InnoDB
+  DEFAULT CHARSET=utf8mb4
+  COLLATE=utf8mb4_0900_ai_ci;
+
+
+-- ============================================================
+-- 15. MA_GIAM_GIA
+-- ============================================================
+
+CREATE TABLE ma_giam_gia (
+    id BIGINT NOT NULL AUTO_INCREMENT,
+
+    ma_code VARCHAR(50) NOT NULL,
+
+    ten_ma VARCHAR(150) NOT NULL,
+
+    loai_giam ENUM(
+        'PHAN_TRAM',
+        'SO_TIEN'
+    ) NOT NULL,
+
+    gia_tri_giam DECIMAL(19,2) NOT NULL,
+
+    don_hang_toi_thieu DECIMAL(19,2) NOT NULL DEFAULT 0,
+
+    giam_toi_da DECIMAL(19,2) DEFAULT NULL,
+
+    so_luong INT DEFAULT NULL,
+
+    so_luong_da_dung INT NOT NULL DEFAULT 0,
+
+    ngay_bat_dau DATETIME(6) NOT NULL,
+
+    ngay_ket_thuc DATETIME(6) NOT NULL,
+
+    trang_thai ENUM(
+        'HOAT_DONG',
+        'NGUNG'
+    ) NOT NULL DEFAULT 'HOAT_DONG',
+
+    created_at DATETIME(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
+
+    updated_at DATETIME(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6)
+        ON UPDATE CURRENT_TIMESTAMP(6),
+
+    PRIMARY KEY (id),
+
+    CONSTRAINT uk_ma_giam_gia_code
+        UNIQUE (ma_code),
+
+    CONSTRAINT ck_ma_giam_gia_gia_tri
+        CHECK (gia_tri_giam > 0),
+
+    CONSTRAINT ck_ma_giam_gia_don_toi_thieu
+        CHECK (don_hang_toi_thieu >= 0),
+
+    CONSTRAINT ck_ma_giam_gia_so_luong
+        CHECK (
+            so_luong IS NULL
+            OR so_luong >= 0
+        ),
+
+    CONSTRAINT ck_ma_giam_gia_thoi_gian
+        CHECK (ngay_ket_thuc > ngay_bat_dau)
+) ENGINE=InnoDB
+  DEFAULT CHARSET=utf8mb4
+  COLLATE=utf8mb4_0900_ai_ci;
+
+
+-- ============================================================
+-- 16. DON_HANG
+-- ============================================================
+
+CREATE TABLE don_hang (
+    id BIGINT NOT NULL AUTO_INCREMENT,
+
+    ma_don_hang VARCHAR(50) NOT NULL,
+
+    tai_khoan_id BIGINT NOT NULL,
+
+    nhan_vien_xu_ly_id BIGINT DEFAULT NULL,
+
+    ma_giam_gia_id BIGINT DEFAULT NULL,
+
+    ngay_dat DATETIME(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
+
+    trang_thai ENUM(
+        'CHO_XAC_NHAN',
+        'DA_XAC_NHAN',
+        'DANG_XU_LY',
+        'DANG_GIAO_HANG',
+        'HOAN_THANH',
+        'DA_HUY'
+    ) NOT NULL DEFAULT 'CHO_XAC_NHAN',
+
+    tong_tien DECIMAL(19,2) NOT NULL,
+
+    tien_giam DECIMAL(19,2) NOT NULL DEFAULT 0,
+
+    phi_van_chuyen DECIMAL(19,2) NOT NULL DEFAULT 0,
+
+    tong_thanh_toan DECIMAL(19,2) NOT NULL,
+
+    ho_ten_nguoi_nhan VARCHAR(120) NOT NULL,
+
+    so_dien_thoai_nguoi_nhan VARCHAR(20) NOT NULL,
+
+    dia_chi_giao_hang VARCHAR(3000) NOT NULL,
+
+    phuong_thuc_van_chuyen VARCHAR(100) NOT NULL,
+
+    ghi_chu VARCHAR(1000) DEFAULT NULL,
+
+    idempotency_key VARCHAR(100) NOT NULL,
+
+    request_hash VARCHAR(64) NOT NULL,
+
+    ngay_xac_nhan DATETIME(6) DEFAULT NULL,
+
+    ngay_hoan_thanh DATETIME(6) DEFAULT NULL,
+
+    ngay_huy DATETIME(6) DEFAULT NULL,
+
+    ly_do_huy VARCHAR(500) DEFAULT NULL,
+
+    created_at DATETIME(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
+
+    updated_at DATETIME(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6)
+        ON UPDATE CURRENT_TIMESTAMP(6),
+
+    PRIMARY KEY (id),
+
+    CONSTRAINT uk_don_hang_ma
+        UNIQUE (ma_don_hang),
+
+    CONSTRAINT uk_don_hang_idempotency
+        UNIQUE (tai_khoan_id, idempotency_key),
+
+    CONSTRAINT fk_don_hang_tai_khoan
+        FOREIGN KEY (tai_khoan_id)
+        REFERENCES tai_khoan(id),
+
+    CONSTRAINT fk_don_hang_nhan_vien
+        FOREIGN KEY (nhan_vien_xu_ly_id)
+        REFERENCES tai_khoan(id)
+        ON DELETE SET NULL,
+
+    CONSTRAINT fk_don_hang_ma_giam_gia
+        FOREIGN KEY (ma_giam_gia_id)
+        REFERENCES ma_giam_gia(id)
+        ON DELETE SET NULL,
+
+    CONSTRAINT ck_don_hang_tien
+        CHECK (
+            tong_tien > 0
+            AND tien_giam >= 0
+            AND phi_van_chuyen >= 0
+            AND tong_thanh_toan = tong_tien - tien_giam + phi_van_chuyen
+            AND tong_thanh_toan >= 0
+        )
+) ENGINE=InnoDB
+  DEFAULT CHARSET=utf8mb4
+  COLLATE=utf8mb4_0900_ai_ci;
+
+
+-- ============================================================
+-- 17. CHI_TIET_DON_HANG
+-- Snapshot sản phẩm tại thời điểm mua
+-- ============================================================
+
+CREATE TABLE chi_tiet_don_hang (
+    id BIGINT NOT NULL AUTO_INCREMENT,
+
+    don_hang_id BIGINT NOT NULL,
+
+    bien_the_id BIGINT NOT NULL,
+
+    ten_san_pham_chot VARCHAR(200) NOT NULL,
+
+    sku_chot VARCHAR(100) NOT NULL,
+
+    size_chot VARCHAR(50) DEFAULT NULL,
+
+    mau_sac_chot VARCHAR(80) DEFAULT NULL,
+
+    so_luong INT NOT NULL,
+
+    don_gia DECIMAL(19,2) NOT NULL,
+
+    thanh_tien DECIMAL(19,2) NOT NULL,
+
+    PRIMARY KEY (id),
+
+    CONSTRAINT fk_ct_don_hang
+        FOREIGN KEY (don_hang_id)
+        REFERENCES don_hang(id)
+        ON DELETE CASCADE,
+
+    CONSTRAINT fk_ct_don_hang_bien_the
+        FOREIGN KEY (bien_the_id)
+        REFERENCES bien_the_san_pham(id),
+
+    CONSTRAINT ck_ct_don_hang
+        CHECK (
+            so_luong BETWEEN 1 AND 1000
+            AND don_gia > 0
+            AND thanh_tien = so_luong * don_gia
+        )
+) ENGINE=InnoDB
+  DEFAULT CHARSET=utf8mb4
+  COLLATE=utf8mb4_0900_ai_ci;
+
+
+-- ============================================================
+-- 18. SU_DUNG_MA_GIAM_GIA
+-- ============================================================
+
+CREATE TABLE su_dung_ma_giam_gia (
+    id BIGINT NOT NULL AUTO_INCREMENT,
+
+    ma_giam_gia_id BIGINT NOT NULL,
+
+    tai_khoan_id BIGINT NOT NULL,
+
+    don_hang_id BIGINT NOT NULL,
+
+    so_tien_giam DECIMAL(19,2) NOT NULL,
+
+    thoi_gian_su_dung DATETIME(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
+
+    PRIMARY KEY (id),
+
+    CONSTRAINT uk_su_dung_ma_don_hang
+        UNIQUE (don_hang_id),
+
+    CONSTRAINT fk_su_dung_ma
+        FOREIGN KEY (ma_giam_gia_id)
+        REFERENCES ma_giam_gia(id),
+
+    CONSTRAINT fk_su_dung_ma_tai_khoan
+        FOREIGN KEY (tai_khoan_id)
+        REFERENCES tai_khoan(id),
+
+    CONSTRAINT fk_su_dung_ma_don_hang
+        FOREIGN KEY (don_hang_id)
+        REFERENCES don_hang(id)
+        ON DELETE CASCADE,
+
+    CONSTRAINT ck_su_dung_ma
+        CHECK (so_tien_giam >= 0)
+) ENGINE=InnoDB
+  DEFAULT CHARSET=utf8mb4
+  COLLATE=utf8mb4_0900_ai_ci;
+
+
+-- ============================================================
+-- 19. THANH_TOAN
+-- ============================================================
+
+CREATE TABLE thanh_toan (
+    id BIGINT NOT NULL AUTO_INCREMENT,
+
+    don_hang_id BIGINT NOT NULL,
+
+    so_tien DECIMAL(19,2) NOT NULL,
+
+    phuong_thuc ENUM(
+        'COD',
+        'BANK_TRANSFER',
+        'ONLINE'
+    ) NOT NULL,
+
+    trang_thai ENUM(
+        'PENDING',
+        'CONFIRMED',
+        'FAILED'
+    ) NOT NULL DEFAULT 'PENDING',
+
+    thoi_gian_thanh_toan DATETIME(6) DEFAULT NULL,
+
+    created_at DATETIME(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
+
+    updated_at DATETIME(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6)
+        ON UPDATE CURRENT_TIMESTAMP(6),
+
+    PRIMARY KEY (id),
+
+    CONSTRAINT uk_thanh_toan_don_hang
+        UNIQUE (don_hang_id),
+
+    CONSTRAINT fk_thanh_toan_don_hang
+        FOREIGN KEY (don_hang_id)
+        REFERENCES don_hang(id)
+        ON DELETE CASCADE,
+
+    CONSTRAINT ck_thanh_toan
+        CHECK (
+            so_tien > 0
+        )
+) ENGINE=InnoDB
+  DEFAULT CHARSET=utf8mb4
+  COLLATE=utf8mb4_0900_ai_ci;
+
+
+-- ============================================================
+-- 20. GIAO_DICH
+-- ============================================================
+
+CREATE TABLE giao_dich (
+    id BIGINT NOT NULL AUTO_INCREMENT,
+
+    thanh_toan_id BIGINT NOT NULL,
+
+    ma_giao_dich_thanh_toan VARCHAR(100) NOT NULL,
+
+    so_tien DECIMAL(19,2) NOT NULL,
+
+    phuong_thuc ENUM(
+        'COD',
+        'BANK_TRANSFER',
+        'ONLINE'
+    ) NOT NULL,
+
+    trang_thai ENUM(
+        'THANH_CONG',
+        'THAT_BAI'
+    ) NOT NULL,
+
+    thoi_gian DATETIME(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
+
+    ghi_chu VARCHAR(500) DEFAULT NULL,
+
+    PRIMARY KEY (id),
+
+    CONSTRAINT uk_giao_dich_ma
+        UNIQUE (ma_giao_dich_thanh_toan),
+
+    CONSTRAINT fk_giao_dich_thanh_toan
+        FOREIGN KEY (thanh_toan_id)
+        REFERENCES thanh_toan(id)
+        ON DELETE CASCADE,
+
+    CONSTRAINT ck_giao_dich_so_tien
+        CHECK (so_tien > 0)
+) ENGINE=InnoDB
+  DEFAULT CHARSET=utf8mb4
+  COLLATE=utf8mb4_0900_ai_ci;
+
+
+-- ============================================================
+-- 21. GIAO_HANG
+-- ============================================================
+
+CREATE TABLE giao_hang (
+    id BIGINT NOT NULL AUTO_INCREMENT,
+
+    don_hang_id BIGINT NOT NULL,
+
+    don_vi_van_chuyen VARCHAR(150) DEFAULT NULL,
+
+    ma_van_don VARCHAR(100) DEFAULT NULL,
+
+    phi_van_chuyen DECIMAL(19,2) NOT NULL DEFAULT 0,
+
+    ngay_du_kien DATETIME(6) DEFAULT NULL,
+
+    ngay_giao DATETIME(6) DEFAULT NULL,
+
+    ngay_nhan DATETIME(6) DEFAULT NULL,
+
+    trang_thai ENUM(
+        'CHO_XU_LY',
+        'DANG_GIAO',
+        'DA_GIAO',
+        'THAT_BAI',
+        'HOAN_TRA'
+    ) NOT NULL DEFAULT 'CHO_XU_LY',
+
+    ghi_chu VARCHAR(500) DEFAULT NULL,
+
+    created_at DATETIME(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
+
+    updated_at DATETIME(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6)
+        ON UPDATE CURRENT_TIMESTAMP(6),
+
+    PRIMARY KEY (id),
+
+    CONSTRAINT uk_giao_hang_don_hang
+        UNIQUE (don_hang_id),
+
+    CONSTRAINT uk_giao_hang_ma_van_don
+        UNIQUE (ma_van_don),
+
+    CONSTRAINT fk_giao_hang_don_hang
+        FOREIGN KEY (don_hang_id)
+        REFERENCES don_hang(id)
+        ON DELETE CASCADE,
+
+    CONSTRAINT ck_giao_hang_phi
+        CHECK (phi_van_chuyen >= 0)
+) ENGINE=InnoDB
+  DEFAULT CHARSET=utf8mb4
+  COLLATE=utf8mb4_0900_ai_ci;
+
+
+-- ============================================================
+-- 22. DANH_GIA
+-- ============================================================
+
+CREATE TABLE danh_gia (
+    id BIGINT NOT NULL AUTO_INCREMENT,
+
+    san_pham_id BIGINT NOT NULL,
+
+    tai_khoan_id BIGINT NOT NULL,
+
+    don_hang_id BIGINT DEFAULT NULL,
+
+    so_sao TINYINT NOT NULL,
+
+    noi_dung VARCHAR(3000) NOT NULL,
+
+    trang_thai ENUM(
+        'HIEN_THI',
+        'AN'
+    ) NOT NULL DEFAULT 'HIEN_THI',
+
+    phan_hoi VARCHAR(3000) DEFAULT NULL,
+
+    ngay_tao DATETIME(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
+
+    ngay_cap_nhat DATETIME(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6)
+        ON UPDATE CURRENT_TIMESTAMP(6),
+
+    PRIMARY KEY (id),
+
+    CONSTRAINT fk_danh_gia_san_pham
+        FOREIGN KEY (san_pham_id)
+        REFERENCES san_pham(id)
+        ON DELETE CASCADE,
+
+    CONSTRAINT fk_danh_gia_tai_khoan
+        FOREIGN KEY (tai_khoan_id)
+        REFERENCES tai_khoan(id)
+        ON DELETE CASCADE,
+
+    CONSTRAINT fk_danh_gia_don_hang
+        FOREIGN KEY (don_hang_id)
+        REFERENCES don_hang(id)
+        ON DELETE SET NULL,
+
+    CONSTRAINT ck_danh_gia_so_sao
+        CHECK (so_sao BETWEEN 1 AND 5)
+) ENGINE=InnoDB
+  DEFAULT CHARSET=utf8mb4
+  COLLATE=utf8mb4_0900_ai_ci;
+
+
+-- ============================================================
+-- 23. HINH_ANH_DANH_GIA
+-- ============================================================
+
+CREATE TABLE hinh_anh_danh_gia (
+    id BIGINT NOT NULL AUTO_INCREMENT,
+
+    danh_gia_id BIGINT NOT NULL,
+
+    duong_dan VARCHAR(1000) NOT NULL,
+
+    thu_tu INT NOT NULL DEFAULT 0,
+
+    PRIMARY KEY (id),
+
+    CONSTRAINT fk_anh_danh_gia
+        FOREIGN KEY (danh_gia_id)
+        REFERENCES danh_gia(id)
+        ON DELETE CASCADE
+) ENGINE=InnoDB
+  DEFAULT CHARSET=utf8mb4
+  COLLATE=utf8mb4_0900_ai_ci;
+
+
+-- ============================================================
+-- 24. BANNER
+-- ============================================================
+
+CREATE TABLE banner (
+    id BIGINT NOT NULL AUTO_INCREMENT,
+
+    tieu_de VARCHAR(200) DEFAULT NULL,
+
+    hinh_anh VARCHAR(1000) NOT NULL,
+
+    duong_dan_lien_ket VARCHAR(1000) DEFAULT NULL,
+
+    thu_tu INT NOT NULL DEFAULT 0,
+
+    trang_thai ENUM(
+        'HIEN_THI',
+        'AN'
+    ) NOT NULL DEFAULT 'HIEN_THI',
+
+    ngay_bat_dau DATETIME(6) DEFAULT NULL,
+
+    ngay_ket_thuc DATETIME(6) DEFAULT NULL,
+
+    created_at DATETIME(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
+
+    updated_at DATETIME(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6)
+        ON UPDATE CURRENT_TIMESTAMP(6),
+
+    PRIMARY KEY (id)
+) ENGINE=InnoDB
+  DEFAULT CHARSET=utf8mb4
+  COLLATE=utf8mb4_0900_ai_ci;
+
+
+-- ============================================================
+-- 25. NOI_DUNG_TRANG
+-- ============================================================
+
+CREATE TABLE noi_dung_trang (
+    id BIGINT NOT NULL AUTO_INCREMENT,
+
+    loai_noi_dung ENUM(
+        'FAQ',
+        'CHINH_SACH',
+        'GIOI_THIEU',
+        'LIEN_HE',
+        'TRANG_CHU'
+    ) NOT NULL,
+
+    tieu_de VARCHAR(255) NOT NULL,
+
+    slug VARCHAR(255) NOT NULL,
+
+    noi_dung LONGTEXT NOT NULL,
+
+    trang_thai ENUM(
+        'HIEN_THI',
+        'AN'
+    ) NOT NULL DEFAULT 'HIEN_THI',
+
+    created_at DATETIME(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
+
+    updated_at DATETIME(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6)
+        ON UPDATE CURRENT_TIMESTAMP(6),
+
+    PRIMARY KEY (id),
+
+    CONSTRAINT uk_noi_dung_slug
+        UNIQUE (slug)
+) ENGINE=InnoDB
+  DEFAULT CHARSET=utf8mb4
+  COLLATE=utf8mb4_0900_ai_ci;
+
+
+-- ============================================================
+-- INDEX BỔ SUNG
+-- ============================================================
+
+CREATE INDEX idx_tai_khoan_vai_tro
+    ON tai_khoan(vai_tro_id);
+
+CREATE INDEX idx_tai_khoan_trang_thai
+    ON tai_khoan(trang_thai);
+
+
+CREATE INDEX idx_dia_chi_tai_khoan
+    ON dia_chi(tai_khoan_id);
+
+
+CREATE INDEX idx_san_pham_ten
+    ON san_pham(ten_san_pham);
+
+CREATE INDEX idx_san_pham_danh_muc
+    ON san_pham(danh_muc_id);
+
+CREATE INDEX idx_san_pham_thuong_hieu
+    ON san_pham(thuong_hieu_id);
+
+CREATE INDEX idx_san_pham_trang_thai
+    ON san_pham(trang_thai);
+
+
+CREATE INDEX idx_bien_the_san_pham
+    ON bien_the_san_pham(san_pham_id);
+
+
+CREATE INDEX idx_ton_kho_so_luong
+    ON ton_kho(so_luong_ton);
+
+
+CREATE INDEX idx_gia_vang_ngay
+    ON gia_vang(ngay_ap_dung);
+
+
+CREATE INDEX idx_don_hang_tai_khoan
+    ON don_hang(tai_khoan_id);
+
+CREATE INDEX idx_don_hang_nhan_vien
+    ON don_hang(nhan_vien_xu_ly_id);
+
+CREATE INDEX idx_don_hang_trang_thai
+    ON don_hang(trang_thai);
+
+CREATE INDEX idx_don_hang_ngay_dat
+    ON don_hang(ngay_dat);
+
+
+CREATE INDEX idx_chi_tiet_don_hang_don
+    ON chi_tiet_don_hang(don_hang_id);
+
+
+CREATE INDEX idx_thanh_toan_trang_thai
+    ON thanh_toan(trang_thai);
+
+
+CREATE INDEX idx_giao_dich_thoi_gian
+    ON giao_dich(thoi_gian);
+
+
+CREATE INDEX idx_giao_hang_trang_thai
+    ON giao_hang(trang_thai);
+
+
+CREATE INDEX idx_danh_gia_san_pham
+    ON danh_gia(san_pham_id);
+
+CREATE INDEX idx_danh_gia_tai_khoan
+    ON danh_gia(tai_khoan_id);
+
+
+-- ============================================================
+-- DỮ LIỆU ROLE MẶC ĐỊNH
+-- ============================================================
+
+INSERT INTO vai_tro (
+    ten_vai_tro,
+    mo_ta
+)
+VALUES
+(
+    'KHACH_HANG',
+    'Khách hàng sử dụng website để mua sản phẩm'
+),
+(
+    'NHAN_VIEN',
+    'Nhân viên quản lý sản phẩm, kho, đơn hàng và giao dịch'
+),
+(
+    'QUAN_LY',
+    'Quản lý toàn bộ hệ thống'
+);
+
+
+-- ============================================================
+-- DỮ LIỆU DANH MỤC MẪU
+-- ============================================================
+
+INSERT INTO danh_muc (
+    ten_danh_muc,
+    mo_ta,
+    trang_thai
+)
+VALUES
+(
+    'Nhẫn',
+    'Các sản phẩm nhẫn trang sức',
+    'HOAT_DONG'
+),
+(
+    'Dây chuyền',
+    'Các sản phẩm dây chuyền',
+    'HOAT_DONG'
+),
+(
+    'Lắc tay',
+    'Các sản phẩm lắc tay và vòng tay',
+    'HOAT_DONG'
+),
+(
+    'Bông tai',
+    'Các sản phẩm bông tai',
+    'HOAT_DONG'
+),
+(
+    'Mặt dây chuyền',
+    'Các sản phẩm mặt dây chuyền',
+    'HOAT_DONG'
+);
+
+
+-- ============================================================
+-- KIỂM TRA
+-- ============================================================
+
+SELECT
+    TABLE_NAME
+FROM information_schema.TABLES
+WHERE TABLE_SCHEMA = 'jewelry_store'
+ORDER BY TABLE_NAME;

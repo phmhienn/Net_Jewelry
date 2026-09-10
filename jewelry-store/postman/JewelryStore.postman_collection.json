@@ -1,0 +1,5047 @@
+{
+  "info": {
+    "name": "Jewelry Store — 25 bảng",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": "Điền tài khoản và ID từ database của bạn. Đặt mới chỉ COD. Đổi Idempotency-Key cho đơn mới; giữ nguyên khi retry. Không có API simulate."
+  },
+  "item": [
+    {
+      "name": "WISHLIST",
+      "item": [
+        {
+          "name": "GET /api/wishlist/{id}",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/wishlist/{{product_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "wishlist",
+                "{{product_id}}"
+              ],
+              "query": []
+            },
+            "description": "Yêu cầu JWT. Vai trò: KHACH_HANG. Response dùng ApiResponse; page bắt đầu từ 0, size tối đa 100. ",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{customer_token}}",
+                  "type": "string"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "PUT /api/wishlist/{id}",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/wishlist/{{product_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "wishlist",
+                "{{product_id}}"
+              ],
+              "query": []
+            },
+            "description": "Yêu cầu JWT. Vai trò: KHACH_HANG. Response dùng ApiResponse; page bắt đầu từ 0, size tối đa 100. ",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{customer_token}}",
+                  "type": "string"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "DELETE /api/wishlist/{id}",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/wishlist/{{product_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "wishlist",
+                "{{product_id}}"
+              ],
+              "query": []
+            },
+            "description": "Yêu cầu JWT. Vai trò: KHACH_HANG. Response dùng ApiResponse; page bắt đầu từ 0, size tối đa 100. ",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{customer_token}}",
+                  "type": "string"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /api/wishlist",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/wishlist",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "wishlist"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "0",
+                  "disabled": false
+                },
+                {
+                  "key": "size",
+                  "value": "20",
+                  "disabled": false
+                }
+              ]
+            },
+            "description": "Yêu cầu JWT. Vai trò: KHACH_HANG. Response dùng ApiResponse; page bắt đầu từ 0, size tối đa 100. ",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{customer_token}}",
+                  "type": "string"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "VARIANTS",
+      "item": [
+        {
+          "name": "PUT /api/variants/{id}",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/variants/{{variant_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "variants",
+                "{{variant_id}}"
+              ],
+              "query": []
+            },
+            "description": "Yêu cầu JWT. Vai trò: NHAN_VIEN, QUAN_LY. Response dùng ApiResponse; page bắt đầu từ 0, size tối đa 100. ",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{staff_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"sku\": \"SP-{{$randomInt}}\",\n  \"price\": 1500000\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "DELETE /api/variants/{id}",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/variants/{{variant_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "variants",
+                "{{variant_id}}"
+              ],
+              "query": []
+            },
+            "description": "Yêu cầu JWT. Vai trò: NHAN_VIEN, QUAN_LY. Response dùng ApiResponse; page bắt đầu từ 0, size tối đa 100. ",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{staff_token}}",
+                  "type": "string"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "REVIEWS",
+      "item": [
+        {
+          "name": "PUT /api/reviews/{id}",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/reviews/{{review_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "reviews",
+                "{{review_id}}"
+              ],
+              "query": []
+            },
+            "description": "Yêu cầu JWT. Vai trò: KHACH_HANG. Response dùng ApiResponse; page bắt đầu từ 0, size tối đa 100. ",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{customer_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"content\": \"Nhập nội dung\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "DELETE /api/reviews/{id}",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/reviews/{{review_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "reviews",
+                "{{review_id}}"
+              ],
+              "query": []
+            },
+            "description": "Yêu cầu JWT. Vai trò: KHACH_HANG. Response dùng ApiResponse; page bắt đầu từ 0, size tối đa 100. ",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{customer_token}}",
+                  "type": "string"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "PUT /api/admin/reviews/{id}/reply",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/admin/reviews/{{review_id}}/reply",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "reviews",
+                "{{review_id}}",
+                "reply"
+              ],
+              "query": []
+            },
+            "description": "Yêu cầu JWT. Vai trò: NHAN_VIEN, QUAN_LY. Response dùng ApiResponse; page bắt đầu từ 0, size tối đa 100. ",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{staff_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"reply\": \"Nhập giá trị\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "POST /api/reviews/{id}/images",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/reviews/{{review_id}}/images",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "reviews",
+                "{{review_id}}",
+                "images"
+              ],
+              "query": []
+            },
+            "description": "Yêu cầu JWT. Vai trò: KHACH_HANG. Response dùng ApiResponse; page bắt đầu từ 0, size tối đa 100. ",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{customer_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"url\": \"{{image_url}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "POST /api/reviews/{id}/images/upload",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/reviews/{{review_id}}/images/upload",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "reviews",
+                "{{review_id}}",
+                "images",
+                "upload"
+              ],
+              "query": []
+            },
+            "description": "Yêu cầu JWT. Vai trò: KHACH_HANG. Response dùng ApiResponse; page bắt đầu từ 0, size tối đa 100. ",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{customer_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "file",
+                  "type": "file",
+                  "src": []
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "PATCH /api/admin/reviews/{id}/status",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/admin/reviews/{{review_id}}/status",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "reviews",
+                "{{review_id}}",
+                "status"
+              ],
+              "query": []
+            },
+            "description": "Yêu cầu JWT. Vai trò: NHAN_VIEN, QUAN_LY. Response dùng ApiResponse; page bắt đầu từ 0, size tối đa 100. ",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{staff_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"HIEN_THI\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "GET /api/admin/reviews",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/admin/reviews",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "reviews"
+              ],
+              "query": [
+                {
+                  "key": "productId",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "page",
+                  "value": "0",
+                  "disabled": false
+                },
+                {
+                  "key": "size",
+                  "value": "20",
+                  "disabled": false
+                }
+              ]
+            },
+            "description": "Yêu cầu JWT. Vai trò: NHAN_VIEN, QUAN_LY. Response dùng ApiResponse; page bắt đầu từ 0, size tối đa 100. ",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{staff_token}}",
+                  "type": "string"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "DELETE /api/admin/reviews/{id}",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/admin/reviews/{{review_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "reviews",
+                "{{review_id}}"
+              ],
+              "query": []
+            },
+            "description": "Yêu cầu JWT. Vai trò: NHAN_VIEN, QUAN_LY. Response dùng ApiResponse; page bắt đầu từ 0, size tối đa 100. ",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{staff_token}}",
+                  "type": "string"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "PRODUCTS",
+      "item": [
+        {
+          "name": "GET /api/products/{id}",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/products/{{product_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "products",
+                "{{product_id}}"
+              ],
+              "query": []
+            },
+            "description": "Public. Response dùng ApiResponse; page bắt đầu từ 0, size tối đa 100. ",
+            "auth": {
+              "type": "noauth"
+            }
+          }
+        },
+        {
+          "name": "PUT /api/products/{id}",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/products/{{product_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "products",
+                "{{product_id}}"
+              ],
+              "query": []
+            },
+            "description": "Yêu cầu JWT. Vai trò: NHAN_VIEN, QUAN_LY. Response dùng ApiResponse; page bắt đầu từ 0, size tối đa 100. ",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{staff_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"sku\": \"SP-{{$randomInt}}\",\n  \"name\": \"Nhập tên\",\n  \"categoryId\": 1,\n  \"brandId\": 1,\n  \"price\": 1500000,\n  \"material\": \"Vàng 18K\",\n  \"status\": \"DANG_BAN\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "DELETE /api/products/{id}",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/products/{{product_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "products",
+                "{{product_id}}"
+              ],
+              "query": []
+            },
+            "description": "Yêu cầu JWT. Vai trò: NHAN_VIEN, QUAN_LY. Response dùng ApiResponse; page bắt đầu từ 0, size tối đa 100. ",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{staff_token}}",
+                  "type": "string"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /api/products",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/products",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "products"
+              ],
+              "query": [
+                {
+                  "key": "keyword",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "category",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "brand",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "material",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "minPrice",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "maxPrice",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "sort",
+                  "value": "newest",
+                  "disabled": false
+                },
+                {
+                  "key": "page",
+                  "value": "0",
+                  "disabled": false
+                },
+                {
+                  "key": "size",
+                  "value": "20",
+                  "disabled": false
+                }
+              ]
+            },
+            "description": "Public. Response dùng ApiResponse; page bắt đầu từ 0, size tối đa 100. ",
+            "auth": {
+              "type": "noauth"
+            }
+          }
+        },
+        {
+          "name": "POST /api/products",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/products",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "products"
+              ],
+              "query": []
+            },
+            "description": "Yêu cầu JWT. Vai trò: NHAN_VIEN, QUAN_LY. Response dùng ApiResponse; page bắt đầu từ 0, size tối đa 100. ",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{staff_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"sku\": \"SP-{{$randomInt}}\",\n  \"name\": \"Nhập tên\",\n  \"categoryId\": 1,\n  \"brandId\": 1,\n  \"price\": 1500000,\n  \"material\": \"Vàng 18K\",\n  \"status\": \"DANG_BAN\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "GET /api/products/{productId}/reviews",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/products/{{product_id}}/reviews",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "products",
+                "{{product_id}}",
+                "reviews"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "0",
+                  "disabled": false
+                },
+                {
+                  "key": "size",
+                  "value": "20",
+                  "disabled": false
+                }
+              ]
+            },
+            "description": "Public. Response dùng ApiResponse; page bắt đầu từ 0, size tối đa 100. ",
+            "auth": {
+              "type": "noauth"
+            }
+          }
+        },
+        {
+          "name": "POST /api/products/{productId}/reviews",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/products/{{product_id}}/reviews",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "products",
+                "{{product_id}}",
+                "reviews"
+              ],
+              "query": []
+            },
+            "description": "Yêu cầu JWT. Vai trò: KHACH_HANG. Response dùng ApiResponse; page bắt đầu từ 0, size tối đa 100. ",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{customer_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"content\": \"Nhập nội dung\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "GET /api/products/{id}/variants",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/products/{{product_id}}/variants",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "products",
+                "{{product_id}}",
+                "variants"
+              ],
+              "query": []
+            },
+            "description": "Public. Response dùng ApiResponse; page bắt đầu từ 0, size tối đa 100. ",
+            "auth": {
+              "type": "noauth"
+            }
+          }
+        },
+        {
+          "name": "POST /api/products/{id}/variants",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/products/{{product_id}}/variants",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "products",
+                "{{product_id}}",
+                "variants"
+              ],
+              "query": []
+            },
+            "description": "Yêu cầu JWT. Vai trò: NHAN_VIEN, QUAN_LY. Response dùng ApiResponse; page bắt đầu từ 0, size tối đa 100. ",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{staff_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"sku\": \"SP-{{$randomInt}}\",\n  \"price\": 1500000\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "GET /api/products/{id}/images",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/products/{{product_id}}/images",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "products",
+                "{{product_id}}",
+                "images"
+              ],
+              "query": []
+            },
+            "description": "Public. Response dùng ApiResponse; page bắt đầu từ 0, size tối đa 100. ",
+            "auth": {
+              "type": "noauth"
+            }
+          }
+        },
+        {
+          "name": "POST /api/products/{id}/images",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/products/{{product_id}}/images",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "products",
+                "{{product_id}}",
+                "images"
+              ],
+              "query": []
+            },
+            "description": "Yêu cầu JWT. Vai trò: NHAN_VIEN, QUAN_LY. Response dùng ApiResponse; page bắt đầu từ 0, size tối đa 100. ",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{staff_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"url\": \"{{image_url}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "POST /api/products/{id}/images/upload",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/products/{{product_id}}/images/upload",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "products",
+                "{{product_id}}",
+                "images",
+                "upload"
+              ],
+              "query": [
+                {
+                  "key": "primary",
+                  "value": "False",
+                  "disabled": false
+                }
+              ]
+            },
+            "description": "Yêu cầu JWT. Vai trò: NHAN_VIEN, QUAN_LY. Response dùng ApiResponse; page bắt đầu từ 0, size tối đa 100. ",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{staff_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "file",
+                  "type": "file",
+                  "src": []
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /api/products/materials",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/products/materials",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "products",
+                "materials"
+              ],
+              "query": []
+            },
+            "description": "Public. Response dùng ApiResponse; page bắt đầu từ 0, size tối đa 100. ",
+            "auth": {
+              "type": "noauth"
+            }
+          }
+        },
+        {
+          "name": "GET /api/admin/products",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/admin/products",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "products"
+              ],
+              "query": [
+                {
+                  "key": "keyword",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "page",
+                  "value": "0",
+                  "disabled": false
+                },
+                {
+                  "key": "size",
+                  "value": "20",
+                  "disabled": false
+                }
+              ]
+            },
+            "description": "Yêu cầu JWT. Vai trò: NHAN_VIEN, QUAN_LY. Response dùng ApiResponse; page bắt đầu từ 0, size tối đa 100. ",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{staff_token}}",
+                  "type": "string"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /api/admin/products/{id}",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/admin/products/{{product_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "products",
+                "{{product_id}}"
+              ],
+              "query": []
+            },
+            "description": "Yêu cầu JWT. Vai trò: NHAN_VIEN, QUAN_LY. Response dùng ApiResponse; page bắt đầu từ 0, size tối đa 100. ",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{staff_token}}",
+                  "type": "string"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "PRODUCT-IMAGES",
+      "item": [
+        {
+          "name": "PUT /api/product-images/{id}/primary",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/product-images/{{product_image_id}}/primary",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "product-images",
+                "{{product_image_id}}",
+                "primary"
+              ],
+              "query": []
+            },
+            "description": "Yêu cầu JWT. Vai trò: NHAN_VIEN, QUAN_LY. Response dùng ApiResponse; page bắt đầu từ 0, size tối đa 100. ",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{staff_token}}",
+                  "type": "string"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "DELETE /api/product-images/{id}",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/product-images/{{product_image_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "product-images",
+                "{{product_image_id}}"
+              ],
+              "query": []
+            },
+            "description": "Yêu cầu JWT. Vai trò: NHAN_VIEN, QUAN_LY. Response dùng ApiResponse; page bắt đầu từ 0, size tối đa 100. ",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{staff_token}}",
+                  "type": "string"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "GOLD-PRICES",
+      "item": [
+        {
+          "name": "PUT /api/gold-prices/{id}",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/gold-prices/{{gold_price_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "gold-prices",
+                "{{gold_price_id}}"
+              ],
+              "query": []
+            },
+            "description": "Yêu cầu JWT. Vai trò: QUAN_LY. Response dùng ApiResponse; page bắt đầu từ 0, size tối đa 100. ",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{manager_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"type\": \"Nhập giá trị\",\n  \"buyPrice\": 10000000,\n  \"sellPrice\": 10200000,\n  \"date\": \"{{date}}\",\n  \"unit\": \"VND/chỉ\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "DELETE /api/gold-prices/{id}",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/gold-prices/{{gold_price_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "gold-prices",
+                "{{gold_price_id}}"
+              ],
+              "query": []
+            },
+            "description": "Yêu cầu JWT. Vai trò: QUAN_LY. Response dùng ApiResponse; page bắt đầu từ 0, size tối đa 100. ",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{manager_token}}",
+                  "type": "string"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /api/gold-prices",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/gold-prices",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "gold-prices"
+              ],
+              "query": [
+                {
+                  "key": "type",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "from",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "to",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "page",
+                  "value": "0",
+                  "disabled": false
+                },
+                {
+                  "key": "size",
+                  "value": "20",
+                  "disabled": false
+                }
+              ]
+            },
+            "description": "Public. Response dùng ApiResponse; page bắt đầu từ 0, size tối đa 100. ",
+            "auth": {
+              "type": "noauth"
+            }
+          }
+        },
+        {
+          "name": "POST /api/gold-prices",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/gold-prices",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "gold-prices"
+              ],
+              "query": []
+            },
+            "description": "Yêu cầu JWT. Vai trò: QUAN_LY. Response dùng ApiResponse; page bắt đầu từ 0, size tối đa 100. ",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{manager_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"type\": \"Nhập giá trị\",\n  \"buyPrice\": 10000000,\n  \"sellPrice\": 10200000,\n  \"date\": \"{{date}}\",\n  \"unit\": \"VND/chỉ\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "GET /api/gold-prices/current",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/gold-prices/current",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "gold-prices",
+                "current"
+              ],
+              "query": []
+            },
+            "description": "Public. Response dùng ApiResponse; page bắt đầu từ 0, size tối đa 100. ",
+            "auth": {
+              "type": "noauth"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "CATEGORIES",
+      "item": [
+        {
+          "name": "GET /api/categories/{id}",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/categories/{{category_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "categories",
+                "{{category_id}}"
+              ],
+              "query": []
+            },
+            "description": "Public. Response dùng ApiResponse; page bắt đầu từ 0, size tối đa 100. ",
+            "auth": {
+              "type": "noauth"
+            }
+          }
+        },
+        {
+          "name": "PUT /api/categories/{id}",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/categories/{{category_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "categories",
+                "{{category_id}}"
+              ],
+              "query": []
+            },
+            "description": "Yêu cầu JWT. Vai trò: QUAN_LY. Response dùng ApiResponse; page bắt đầu từ 0, size tối đa 100. ",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{manager_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Nhập tên\",\n  \"status\": \"HOAT_DONG\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "DELETE /api/categories/{id}",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/categories/{{category_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "categories",
+                "{{category_id}}"
+              ],
+              "query": []
+            },
+            "description": "Yêu cầu JWT. Vai trò: QUAN_LY. Response dùng ApiResponse; page bắt đầu từ 0, size tối đa 100. ",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{manager_token}}",
+                  "type": "string"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /api/categories",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/categories",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "categories"
+              ],
+              "query": [
+                {
+                  "key": "tree",
+                  "value": "False",
+                  "disabled": false
+                }
+              ]
+            },
+            "description": "Public. Response dùng ApiResponse; page bắt đầu từ 0, size tối đa 100. ",
+            "auth": {
+              "type": "noauth"
+            }
+          }
+        },
+        {
+          "name": "POST /api/categories",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/categories",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "categories"
+              ],
+              "query": []
+            },
+            "description": "Yêu cầu JWT. Vai trò: QUAN_LY. Response dùng ApiResponse; page bắt đầu từ 0, size tối đa 100. ",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{manager_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Nhập tên\",\n  \"status\": \"HOAT_DONG\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "CART",
+      "item": [
+        {
+          "name": "PUT /api/cart/items/{id}",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/cart/items/{{cart_item_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "cart",
+                "items",
+                "{{cart_item_id}}"
+              ],
+              "query": []
+            },
+            "description": "Yêu cầu JWT. Vai trò: KHACH_HANG. Response dùng ApiResponse; page bắt đầu từ 0, size tối đa 100. ",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{customer_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "DELETE /api/cart/items/{id}",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/cart/items/{{cart_item_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "cart",
+                "items",
+                "{{cart_item_id}}"
+              ],
+              "query": []
+            },
+            "description": "Yêu cầu JWT. Vai trò: KHACH_HANG. Response dùng ApiResponse; page bắt đầu từ 0, size tối đa 100. ",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{customer_token}}",
+                  "type": "string"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "POST /api/cart/items",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/cart/items",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "cart",
+                "items"
+              ],
+              "query": []
+            },
+            "description": "Yêu cầu JWT. Vai trò: KHACH_HANG. Response dùng ApiResponse; page bắt đầu từ 0, size tối đa 100. ",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{customer_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"variantId\": 1\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "PATCH /api/cart/items/{id}/selection",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/cart/items/{{cart_item_id}}/selection",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "cart",
+                "items",
+                "{{cart_item_id}}",
+                "selection"
+              ],
+              "query": []
+            },
+            "description": "Yêu cầu JWT. Vai trò: KHACH_HANG. Response dùng ApiResponse; page bắt đầu từ 0, size tối đa 100. ",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{customer_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"selected\": true\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "GET /api/cart",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/cart",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "cart"
+              ],
+              "query": []
+            },
+            "description": "Yêu cầu JWT. Vai trò: KHACH_HANG. Response dùng ApiResponse; page bắt đầu từ 0, size tối đa 100. ",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{customer_token}}",
+                  "type": "string"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "DELETE /api/cart",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/cart",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "cart"
+              ],
+              "query": []
+            },
+            "description": "Yêu cầu JWT. Vai trò: KHACH_HANG. Response dùng ApiResponse; page bắt đầu từ 0, size tối đa 100. ",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{customer_token}}",
+                  "type": "string"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "BRANDS",
+      "item": [
+        {
+          "name": "GET /api/brands/{id}",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/brands/{{brand_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "brands",
+                "{{brand_id}}"
+              ],
+              "query": []
+            },
+            "description": "Public. Response dùng ApiResponse; page bắt đầu từ 0, size tối đa 100. ",
+            "auth": {
+              "type": "noauth"
+            }
+          }
+        },
+        {
+          "name": "PUT /api/brands/{id}",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/brands/{{brand_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "brands",
+                "{{brand_id}}"
+              ],
+              "query": []
+            },
+            "description": "Yêu cầu JWT. Vai trò: QUAN_LY. Response dùng ApiResponse; page bắt đầu từ 0, size tối đa 100. ",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{manager_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Nhập tên\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "DELETE /api/brands/{id}",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/brands/{{brand_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "brands",
+                "{{brand_id}}"
+              ],
+              "query": []
+            },
+            "description": "Yêu cầu JWT. Vai trò: QUAN_LY. Response dùng ApiResponse; page bắt đầu từ 0, size tối đa 100. ",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{manager_token}}",
+                  "type": "string"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /api/brands",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/brands",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "brands"
+              ],
+              "query": []
+            },
+            "description": "Public. Response dùng ApiResponse; page bắt đầu từ 0, size tối đa 100. ",
+            "auth": {
+              "type": "noauth"
+            }
+          }
+        },
+        {
+          "name": "POST /api/brands",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/brands",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "brands"
+              ],
+              "query": []
+            },
+            "description": "Yêu cầu JWT. Vai trò: QUAN_LY. Response dùng ApiResponse; page bắt đầu từ 0, size tối đa 100. ",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{manager_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Nhập tên\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "AUTH",
+      "item": [
+        {
+          "name": "PUT /api/auth/password",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/auth/password",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "password"
+              ],
+              "query": []
+            },
+            "description": "Yêu cầu JWT. Vai trò: KHACH_HANG, NHAN_VIEN, QUAN_LY. Response dùng ApiResponse; page bắt đầu từ 0, size tối đa 100. ",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{customer_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"currentPassword\": \"{{customer_password}}\",\n  \"newPassword\": \"{{new_password}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "POST /api/auth/staff/login",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/auth/staff/login",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "staff",
+                "login"
+              ],
+              "query": []
+            },
+            "description": "Public. Response dùng ApiResponse; page bắt đầu từ 0, size tối đa 100. Tương thích ứng dụng cũ. Dùng POST /api/auth/login cho cả ba vai trò.",
+            "auth": {
+              "type": "noauth"
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"{{staff_username}}\",\n  \"password\": \"{{staff_password}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if(pm.response.code===200){const d=pm.response.json().data;pm.environment.set(d.user.role===\"KHACH_HANG\"?\"customer_token\":d.user.role===\"QUAN_LY\"?\"manager_token\":\"staff_token\",d.accessToken);}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "POST /api/auth/reset-password",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/auth/reset-password",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "reset-password"
+              ],
+              "query": []
+            },
+            "description": "Public. Response dùng ApiResponse; page bắt đầu từ 0, size tối đa 100. ",
+            "auth": {
+              "type": "noauth"
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"token\": \"{{reset_token}}\",\n  \"newPassword\": \"{{new_password}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "POST /api/auth/register",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/auth/register",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "register"
+              ],
+              "query": []
+            },
+            "description": "Public. Response dùng ApiResponse; page bắt đầu từ 0, size tối đa 100. ",
+            "auth": {
+              "type": "noauth"
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Nhập tên\",\n  \"email\": \"{{customer_email}}\",\n  \"password\": \"{{customer_password}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "POST /api/auth/logout",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/auth/logout",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "logout"
+              ],
+              "query": []
+            },
+            "description": "Yêu cầu JWT. Vai trò: KHACH_HANG, NHAN_VIEN, QUAN_LY. Response dùng ApiResponse; page bắt đầu từ 0, size tối đa 100. ",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{customer_token}}",
+                  "type": "string"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "POST /api/auth/login",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/auth/login",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "login"
+              ],
+              "query": []
+            },
+            "description": "Public. Response dùng ApiResponse; page bắt đầu từ 0, size tối đa 100. ",
+            "auth": {
+              "type": "noauth"
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"identifier\": \"{{customer_identifier}}\",\n  \"password\": \"{{customer_password}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if(pm.response.code===200){const d=pm.response.json().data;pm.environment.set(d.user.role===\"KHACH_HANG\"?\"customer_token\":d.user.role===\"QUAN_LY\"?\"manager_token\":\"staff_token\",d.accessToken);}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "POST /api/auth/forgot-password",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/auth/forgot-password",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "forgot-password"
+              ],
+              "query": []
+            },
+            "description": "Public. Response dùng ApiResponse; page bắt đầu từ 0, size tối đa 100. ",
+            "auth": {
+              "type": "noauth"
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{customer_email}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "GET /api/auth/me",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/auth/me",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "me"
+              ],
+              "query": []
+            },
+            "description": "Yêu cầu JWT. Vai trò: KHACH_HANG, NHAN_VIEN, QUAN_LY. Response dùng ApiResponse; page bắt đầu từ 0, size tối đa 100. ",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{customer_token}}",
+                  "type": "string"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "POST /api/auth/login — NHAN_VIEN",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/auth/login",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "login"
+              ],
+              "query": []
+            },
+            "description": "Public. Response dùng ApiResponse; page bắt đầu từ 0, size tối đa 100. ",
+            "auth": {
+              "type": "noauth"
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"identifier\": \"{{staff_identifier}}\",\n  \"password\": \"{{staff_password}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if(pm.response.code===200){const d=pm.response.json().data;pm.environment.set(d.user.role===\"KHACH_HANG\"?\"customer_token\":d.user.role===\"QUAN_LY\"?\"manager_token\":\"staff_token\",d.accessToken);}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "POST /api/auth/login — QUAN_LY",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/auth/login",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "login"
+              ],
+              "query": []
+            },
+            "description": "Public. Response dùng ApiResponse; page bắt đầu từ 0, size tối đa 100. ",
+            "auth": {
+              "type": "noauth"
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"identifier\": \"{{manager_identifier}}\",\n  \"password\": \"{{manager_password}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if(pm.response.code===200){const d=pm.response.json().data;pm.environment.set(d.user.role===\"KHACH_HANG\"?\"customer_token\":d.user.role===\"QUAN_LY\"?\"manager_token\":\"staff_token\",d.accessToken);}"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "STAFF",
+      "item": [
+        {
+          "name": "GET /api/admin/staff/{id}",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/admin/staff/{{staff_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "staff",
+                "{{staff_id}}"
+              ],
+              "query": []
+            },
+            "description": "Yêu cầu JWT. Vai trò: QUAN_LY. Response dùng ApiResponse; page bắt đầu từ 0, size tối đa 100. ",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{manager_token}}",
+                  "type": "string"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "PUT /api/admin/staff/{id}",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/admin/staff/{{staff_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "staff",
+                "{{staff_id}}"
+              ],
+              "query": []
+            },
+            "description": "Yêu cầu JWT. Vai trò: QUAN_LY. Response dùng ApiResponse; page bắt đầu từ 0, size tối đa 100. ",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{manager_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Nhập tên\",\n  \"email\": \"{{customer_email}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "GET /api/admin/staff",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/admin/staff",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "staff"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "0",
+                  "disabled": false
+                },
+                {
+                  "key": "size",
+                  "value": "20",
+                  "disabled": false
+                }
+              ]
+            },
+            "description": "Yêu cầu JWT. Vai trò: QUAN_LY. Response dùng ApiResponse; page bắt đầu từ 0, size tối đa 100. ",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{manager_token}}",
+                  "type": "string"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "POST /api/admin/staff",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/admin/staff",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "staff"
+              ],
+              "query": []
+            },
+            "description": "Yêu cầu JWT. Vai trò: QUAN_LY. Response dùng ApiResponse; page bắt đầu từ 0, size tối đa 100. ",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{manager_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Nhập tên\",\n  \"email\": \"{{customer_email}}\",\n  \"username\": \"{{customer_username}}\",\n  \"password\": \"{{customer_password}}\",\n  \"role\": \"KHACH_HANG\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "PATCH /api/admin/staff/{id}/status",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/admin/staff/{{staff_id}}/status",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "staff",
+                "{{staff_id}}",
+                "status"
+              ],
+              "query": []
+            },
+            "description": "Yêu cầu JWT. Vai trò: QUAN_LY. Response dùng ApiResponse; page bắt đầu từ 0, size tối đa 100. ",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{manager_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"HOAT_DONG\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "PATCH /api/admin/staff/{id}/role",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/admin/staff/{{staff_id}}/role",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "staff",
+                "{{staff_id}}",
+                "role"
+              ],
+              "query": []
+            },
+            "description": "Yêu cầu JWT. Vai trò: QUAN_LY. Response dùng ApiResponse; page bắt đầu từ 0, size tối đa 100. ",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{manager_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"role\": \"KHACH_HANG\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "ORDERS",
+      "item": [
+        {
+          "name": "PUT /api/admin/orders/{id}/delivery",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/admin/orders/{{order_id}}/delivery",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "orders",
+                "{{order_id}}",
+                "delivery"
+              ],
+              "query": []
+            },
+            "description": "Yêu cầu JWT. Vai trò: NHAN_VIEN, QUAN_LY. Response dùng ApiResponse; page bắt đầu từ 0, size tối đa 100. ",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{staff_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"carrier\": \"Đơn vị vận chuyển\",\n  \"trackingCode\": \"{{tracking_code}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "GET /api/orders",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/orders",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "orders"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "0",
+                  "disabled": false
+                },
+                {
+                  "key": "size",
+                  "value": "20",
+                  "disabled": false
+                }
+              ]
+            },
+            "description": "Yêu cầu JWT. Vai trò: KHACH_HANG. Response dùng ApiResponse; page bắt đầu từ 0, size tối đa 100. ",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{customer_token}}",
+                  "type": "string"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "POST /api/orders",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Idempotency-Key",
+                "value": "{{idempotency_key}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/orders",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "orders"
+              ],
+              "query": []
+            },
+            "description": "Yêu cầu JWT. Vai trò: KHACH_HANG. Response dùng ApiResponse; page bắt đầu từ 0, size tối đa 100. ",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{customer_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"address\": {\n    \"name\": \"Nhập tên\",\n    \"phone\": \"0901234567\",\n    \"city\": \"Hồ Chí Minh\",\n    \"district\": \"Quận 1\",\n    \"ward\": \"Bến Nghé\",\n    \"street\": \"Địa chỉ của bạn\"\n  },\n  \"payment\": \"COD\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if(!pm.environment.get(\"idempotency_key\"))pm.environment.set(\"idempotency_key\",pm.variables.replaceIn(\"{{$guid}}\"));"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if(pm.response.code===201){const d=pm.response.json().data;pm.environment.set(\"order_id\",d.id);pm.environment.set(\"payment_id\",d.payment.id);}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "POST /api/orders/{id}/cancel",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/orders/{{order_id}}/cancel",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "orders",
+                "{{order_id}}",
+                "cancel"
+              ],
+              "query": []
+            },
+            "description": "Yêu cầu JWT. Vai trò: KHACH_HANG. Response dùng ApiResponse; page bắt đầu từ 0, size tối đa 100. ",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{customer_token}}",
+                  "type": "string"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "PATCH /api/admin/orders/{id}/status",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/admin/orders/{{order_id}}/status",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "orders",
+                "{{order_id}}",
+                "status"
+              ],
+              "query": []
+            },
+            "description": "Yêu cầu JWT. Vai trò: NHAN_VIEN, QUAN_LY. Response dùng ApiResponse; page bắt đầu từ 0, size tối đa 100. ",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{staff_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"CHO_XAC_NHAN\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "GET /api/admin/orders",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/admin/orders",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "orders"
+              ],
+              "query": [
+                {
+                  "key": "status",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "customerId",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "page",
+                  "value": "0",
+                  "disabled": false
+                },
+                {
+                  "key": "size",
+                  "value": "20",
+                  "disabled": false
+                }
+              ]
+            },
+            "description": "Yêu cầu JWT. Vai trò: NHAN_VIEN, QUAN_LY. Response dùng ApiResponse; page bắt đầu từ 0, size tối đa 100. ",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{staff_token}}",
+                  "type": "string"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /api/admin/orders/{id}",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/admin/orders/{{order_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "orders",
+                "{{order_id}}"
+              ],
+              "query": []
+            },
+            "description": "Yêu cầu JWT. Vai trò: NHAN_VIEN, QUAN_LY. Response dùng ApiResponse; page bắt đầu từ 0, size tối đa 100. ",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{staff_token}}",
+                  "type": "string"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /api/orders/{id}",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/orders/{{order_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "orders",
+                "{{order_id}}"
+              ],
+              "query": []
+            },
+            "description": "Yêu cầu JWT. Vai trò: KHACH_HANG. Response dùng ApiResponse; page bắt đầu từ 0, size tối đa 100. ",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{customer_token}}",
+                  "type": "string"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "CUSTOMERS",
+      "item": [
+        {
+          "name": "GET /api/admin/customers/{id}",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/admin/customers/{{customer_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "customers",
+                "{{customer_id}}"
+              ],
+              "query": []
+            },
+            "description": "Yêu cầu JWT. Vai trò: QUAN_LY. Response dùng ApiResponse; page bắt đầu từ 0, size tối đa 100. ",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{manager_token}}",
+                  "type": "string"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "PUT /api/admin/customers/{id}",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/admin/customers/{{customer_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "customers",
+                "{{customer_id}}"
+              ],
+              "query": []
+            },
+            "description": "Yêu cầu JWT. Vai trò: QUAN_LY. Response dùng ApiResponse; page bắt đầu từ 0, size tối đa 100. ",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{manager_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Nhập tên\",\n  \"email\": \"{{customer_email}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "PUT /api/admin/customers/{customerId}/addresses/{id}",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/admin/customers/{{customer_id}}/addresses/{{address_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "customers",
+                "{{customer_id}}",
+                "addresses",
+                "{{address_id}}"
+              ],
+              "query": []
+            },
+            "description": "Yêu cầu JWT. Vai trò: QUAN_LY. Response dùng ApiResponse; page bắt đầu từ 0, size tối đa 100. ",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{manager_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Nhập tên\",\n  \"phone\": \"0901234567\",\n  \"city\": \"Hồ Chí Minh\",\n  \"district\": \"Quận 1\",\n  \"ward\": \"Bến Nghé\",\n  \"street\": \"Địa chỉ của bạn\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "DELETE /api/admin/customers/{customerId}/addresses/{id}",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/admin/customers/{{customer_id}}/addresses/{{address_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "customers",
+                "{{customer_id}}",
+                "addresses",
+                "{{address_id}}"
+              ],
+              "query": []
+            },
+            "description": "Yêu cầu JWT. Vai trò: QUAN_LY. Response dùng ApiResponse; page bắt đầu từ 0, size tối đa 100. ",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{manager_token}}",
+                  "type": "string"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "PUT /api/admin/customers/{customerId}/addresses/{id}/default",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/admin/customers/{{customer_id}}/addresses/{{address_id}}/default",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "customers",
+                "{{customer_id}}",
+                "addresses",
+                "{{address_id}}",
+                "default"
+              ],
+              "query": []
+            },
+            "description": "Yêu cầu JWT. Vai trò: QUAN_LY. Response dùng ApiResponse; page bắt đầu từ 0, size tối đa 100. ",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{manager_token}}",
+                  "type": "string"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /api/admin/customers/{customerId}/addresses",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/admin/customers/{{customer_id}}/addresses",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "customers",
+                "{{customer_id}}",
+                "addresses"
+              ],
+              "query": []
+            },
+            "description": "Yêu cầu JWT. Vai trò: QUAN_LY. Response dùng ApiResponse; page bắt đầu từ 0, size tối đa 100. ",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{manager_token}}",
+                  "type": "string"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "POST /api/admin/customers/{customerId}/addresses",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/admin/customers/{{customer_id}}/addresses",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "customers",
+                "{{customer_id}}",
+                "addresses"
+              ],
+              "query": []
+            },
+            "description": "Yêu cầu JWT. Vai trò: QUAN_LY. Response dùng ApiResponse; page bắt đầu từ 0, size tối đa 100. ",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{manager_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Nhập tên\",\n  \"phone\": \"0901234567\",\n  \"city\": \"Hồ Chí Minh\",\n  \"district\": \"Quận 1\",\n  \"ward\": \"Bến Nghé\",\n  \"street\": \"Địa chỉ của bạn\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "PATCH /api/admin/customers/{id}/status",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/admin/customers/{{customer_id}}/status",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "customers",
+                "{{customer_id}}",
+                "status"
+              ],
+              "query": []
+            },
+            "description": "Yêu cầu JWT. Vai trò: QUAN_LY. Response dùng ApiResponse; page bắt đầu từ 0, size tối đa 100. ",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{manager_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"HOAT_DONG\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "GET /api/admin/customers",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/admin/customers",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "customers"
+              ],
+              "query": [
+                {
+                  "key": "keyword",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "page",
+                  "value": "0",
+                  "disabled": false
+                },
+                {
+                  "key": "size",
+                  "value": "20",
+                  "disabled": false
+                }
+              ]
+            },
+            "description": "Yêu cầu JWT. Vai trò: QUAN_LY. Response dùng ApiResponse; page bắt đầu từ 0, size tối đa 100. ",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{manager_token}}",
+                  "type": "string"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "COUPONS",
+      "item": [
+        {
+          "name": "PUT /api/admin/coupons/{id}",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/admin/coupons/{{coupon_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "coupons",
+                "{{coupon_id}}"
+              ],
+              "query": []
+            },
+            "description": "Yêu cầu JWT. Vai trò: QUAN_LY. Response dùng ApiResponse; page bắt đầu từ 0, size tối đa 100. ",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{manager_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"code\": \"{{coupon_code}}\",\n  \"name\": \"Nhập tên\",\n  \"type\": \"PHAN_TRAM\",\n  \"value\": 10,\n  \"minimumOrder\": 0,\n  \"startsAt\": \"{{starts_at}}\",\n  \"endsAt\": \"{{ends_at}}\",\n  \"status\": \"HOAT_DONG\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "DELETE /api/admin/coupons/{id}",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/admin/coupons/{{coupon_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "coupons",
+                "{{coupon_id}}"
+              ],
+              "query": []
+            },
+            "description": "Yêu cầu JWT. Vai trò: QUAN_LY. Response dùng ApiResponse; page bắt đầu từ 0, size tối đa 100. ",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{manager_token}}",
+                  "type": "string"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "POST /api/coupons/quote",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/coupons/quote",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "coupons",
+                "quote"
+              ],
+              "query": []
+            },
+            "description": "Yêu cầu JWT. Vai trò: KHACH_HANG. Response dùng ApiResponse; page bắt đầu từ 0, size tối đa 100. ",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{customer_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"code\": \"{{coupon_code}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "GET /api/admin/coupons",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/admin/coupons",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "coupons"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "0",
+                  "disabled": false
+                },
+                {
+                  "key": "size",
+                  "value": "20",
+                  "disabled": false
+                }
+              ]
+            },
+            "description": "Yêu cầu JWT. Vai trò: QUAN_LY. Response dùng ApiResponse; page bắt đầu từ 0, size tối đa 100. ",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{manager_token}}",
+                  "type": "string"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "POST /api/admin/coupons",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/admin/coupons",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "coupons"
+              ],
+              "query": []
+            },
+            "description": "Yêu cầu JWT. Vai trò: QUAN_LY. Response dùng ApiResponse; page bắt đầu từ 0, size tối đa 100. ",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{manager_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"code\": \"{{coupon_code}}\",\n  \"name\": \"Nhập tên\",\n  \"type\": \"PHAN_TRAM\",\n  \"value\": 10,\n  \"minimumOrder\": 0,\n  \"startsAt\": \"{{starts_at}}\",\n  \"endsAt\": \"{{ends_at}}\",\n  \"status\": \"HOAT_DONG\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "CONTENTS",
+      "item": [
+        {
+          "name": "PUT /api/admin/contents/{id}",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/admin/contents/{{content_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "contents",
+                "{{content_id}}"
+              ],
+              "query": []
+            },
+            "description": "Yêu cầu JWT. Vai trò: QUAN_LY. Response dùng ApiResponse; page bắt đầu từ 0, size tối đa 100. ",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{manager_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"type\": \"FAQ\",\n  \"title\": \"Tiêu đề\",\n  \"slug\": \"gioi-thieu\",\n  \"content\": \"Nhập nội dung\",\n  \"status\": \"HIEN_THI\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "DELETE /api/admin/contents/{id}",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/admin/contents/{{content_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "contents",
+                "{{content_id}}"
+              ],
+              "query": []
+            },
+            "description": "Yêu cầu JWT. Vai trò: QUAN_LY. Response dùng ApiResponse; page bắt đầu từ 0, size tối đa 100. ",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{manager_token}}",
+                  "type": "string"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /api/admin/contents",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/admin/contents",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "contents"
+              ],
+              "query": [
+                {
+                  "key": "type",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "page",
+                  "value": "0",
+                  "disabled": false
+                },
+                {
+                  "key": "size",
+                  "value": "20",
+                  "disabled": false
+                }
+              ]
+            },
+            "description": "Yêu cầu JWT. Vai trò: QUAN_LY. Response dùng ApiResponse; page bắt đầu từ 0, size tối đa 100. ",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{manager_token}}",
+                  "type": "string"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "POST /api/admin/contents",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/admin/contents",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "contents"
+              ],
+              "query": []
+            },
+            "description": "Yêu cầu JWT. Vai trò: QUAN_LY. Response dùng ApiResponse; page bắt đầu từ 0, size tối đa 100. ",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{manager_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"type\": \"FAQ\",\n  \"title\": \"Tiêu đề\",\n  \"slug\": \"gioi-thieu\",\n  \"content\": \"Nhập nội dung\",\n  \"status\": \"HIEN_THI\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "GET /api/contents",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/contents",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "contents"
+              ],
+              "query": [
+                {
+                  "key": "type",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "page",
+                  "value": "0",
+                  "disabled": false
+                },
+                {
+                  "key": "size",
+                  "value": "20",
+                  "disabled": false
+                }
+              ]
+            },
+            "description": "Public. Response dùng ApiResponse; page bắt đầu từ 0, size tối đa 100. ",
+            "auth": {
+              "type": "noauth"
+            }
+          }
+        },
+        {
+          "name": "GET /api/contents/{slug}",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/contents/{{content_slug}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "contents",
+                "{{content_slug}}"
+              ],
+              "query": []
+            },
+            "description": "Public. Response dùng ApiResponse; page bắt đầu từ 0, size tối đa 100. ",
+            "auth": {
+              "type": "noauth"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "BANNERS",
+      "item": [
+        {
+          "name": "PUT /api/admin/banners/{id}",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/admin/banners/{{banner_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "banners",
+                "{{banner_id}}"
+              ],
+              "query": []
+            },
+            "description": "Yêu cầu JWT. Vai trò: QUAN_LY. Response dùng ApiResponse; page bắt đầu từ 0, size tối đa 100. ",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{manager_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"image\": \"{{image_url}}\",\n  \"status\": \"HIEN_THI\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "DELETE /api/admin/banners/{id}",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/admin/banners/{{banner_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "banners",
+                "{{banner_id}}"
+              ],
+              "query": []
+            },
+            "description": "Yêu cầu JWT. Vai trò: QUAN_LY. Response dùng ApiResponse; page bắt đầu từ 0, size tối đa 100. ",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{manager_token}}",
+                  "type": "string"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /api/admin/banners",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/admin/banners",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "banners"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "0",
+                  "disabled": false
+                },
+                {
+                  "key": "size",
+                  "value": "20",
+                  "disabled": false
+                }
+              ]
+            },
+            "description": "Yêu cầu JWT. Vai trò: QUAN_LY. Response dùng ApiResponse; page bắt đầu từ 0, size tối đa 100. ",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{manager_token}}",
+                  "type": "string"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "POST /api/admin/banners",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/admin/banners",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "banners"
+              ],
+              "query": []
+            },
+            "description": "Yêu cầu JWT. Vai trò: QUAN_LY. Response dùng ApiResponse; page bắt đầu từ 0, size tối đa 100. ",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{manager_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"image\": \"{{image_url}}\",\n  \"status\": \"HIEN_THI\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "GET /api/banners",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/banners",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "banners"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "0",
+                  "disabled": false
+                },
+                {
+                  "key": "size",
+                  "value": "20",
+                  "disabled": false
+                }
+              ]
+            },
+            "description": "Public. Response dùng ApiResponse; page bắt đầu từ 0, size tối đa 100. ",
+            "auth": {
+              "type": "noauth"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "ADDRESSES",
+      "item": [
+        {
+          "name": "PUT /api/addresses/{id}",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/addresses/{{address_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "addresses",
+                "{{address_id}}"
+              ],
+              "query": []
+            },
+            "description": "Yêu cầu JWT. Vai trò: KHACH_HANG. Response dùng ApiResponse; page bắt đầu từ 0, size tối đa 100. ",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{customer_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Nhập tên\",\n  \"phone\": \"0901234567\",\n  \"city\": \"Hồ Chí Minh\",\n  \"district\": \"Quận 1\",\n  \"ward\": \"Bến Nghé\",\n  \"street\": \"Địa chỉ của bạn\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "DELETE /api/addresses/{id}",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/addresses/{{address_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "addresses",
+                "{{address_id}}"
+              ],
+              "query": []
+            },
+            "description": "Yêu cầu JWT. Vai trò: KHACH_HANG. Response dùng ApiResponse; page bắt đầu từ 0, size tối đa 100. ",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{customer_token}}",
+                  "type": "string"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "PUT /api/addresses/{id}/default",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/addresses/{{address_id}}/default",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "addresses",
+                "{{address_id}}",
+                "default"
+              ],
+              "query": []
+            },
+            "description": "Yêu cầu JWT. Vai trò: KHACH_HANG. Response dùng ApiResponse; page bắt đầu từ 0, size tối đa 100. ",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{customer_token}}",
+                  "type": "string"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /api/addresses",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/addresses",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "addresses"
+              ],
+              "query": []
+            },
+            "description": "Yêu cầu JWT. Vai trò: KHACH_HANG. Response dùng ApiResponse; page bắt đầu từ 0, size tối đa 100. ",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{customer_token}}",
+                  "type": "string"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "POST /api/addresses",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/addresses",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "addresses"
+              ],
+              "query": []
+            },
+            "description": "Yêu cầu JWT. Vai trò: KHACH_HANG. Response dùng ApiResponse; page bắt đầu từ 0, size tối đa 100. ",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{customer_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Nhập tên\",\n  \"phone\": \"0901234567\",\n  \"city\": \"Hồ Chí Minh\",\n  \"district\": \"Quận 1\",\n  \"ward\": \"Bến Nghé\",\n  \"street\": \"Địa chỉ của bạn\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "ACCOUNT",
+      "item": [
+        {
+          "name": "GET /api/account/profile",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/account/profile",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "account",
+                "profile"
+              ],
+              "query": []
+            },
+            "description": "Yêu cầu JWT. Vai trò: KHACH_HANG, NHAN_VIEN, QUAN_LY. Response dùng ApiResponse; page bắt đầu từ 0, size tối đa 100. ",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{customer_token}}",
+                  "type": "string"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "PUT /api/account/profile",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/account/profile",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "account",
+                "profile"
+              ],
+              "query": []
+            },
+            "description": "Yêu cầu JWT. Vai trò: KHACH_HANG, NHAN_VIEN, QUAN_LY. Response dùng ApiResponse; page bắt đầu từ 0, size tối đa 100. ",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{customer_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Nhập tên\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "PUT /api/account/avatar",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/account/avatar",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "account",
+                "avatar"
+              ],
+              "query": []
+            },
+            "description": "Yêu cầu JWT. Vai trò: KHACH_HANG, NHAN_VIEN, QUAN_LY. Response dùng ApiResponse; page bắt đầu từ 0, size tối đa 100. ",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{customer_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"url\": \"{{image_url}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "DELETE /api/account/avatar",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/account/avatar",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "account",
+                "avatar"
+              ],
+              "query": []
+            },
+            "description": "Yêu cầu JWT. Vai trò: KHACH_HANG, NHAN_VIEN, QUAN_LY. Response dùng ApiResponse; page bắt đầu từ 0, size tối đa 100. ",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{customer_token}}",
+                  "type": "string"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "POST /api/account/avatar/upload",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/account/avatar/upload",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "account",
+                "avatar",
+                "upload"
+              ],
+              "query": []
+            },
+            "description": "Yêu cầu JWT. Vai trò: KHACH_HANG, NHAN_VIEN, QUAN_LY. Response dùng ApiResponse; page bắt đầu từ 0, size tối đa 100. ",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{customer_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "file",
+                  "type": "file",
+                  "src": []
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "INVENTORY",
+      "item": [
+        {
+          "name": "POST /api/inventory/import",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/inventory/import",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "inventory",
+                "import"
+              ],
+              "query": []
+            },
+            "description": "Yêu cầu JWT. Vai trò: NHAN_VIEN, QUAN_LY. Response dùng ApiResponse; page bắt đầu từ 0, size tối đa 100. ",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{staff_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"variantId\": 1,\n  \"reason\": \"Nhập giá trị\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "POST /api/inventory/export",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/inventory/export",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "inventory",
+                "export"
+              ],
+              "query": []
+            },
+            "description": "Yêu cầu JWT. Vai trò: NHAN_VIEN, QUAN_LY. Response dùng ApiResponse; page bắt đầu từ 0, size tối đa 100. ",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{staff_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"variantId\": 1,\n  \"reason\": \"Nhập giá trị\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "POST /api/inventory/adjust",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/inventory/adjust",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "inventory",
+                "adjust"
+              ],
+              "query": []
+            },
+            "description": "Yêu cầu JWT. Vai trò: NHAN_VIEN, QUAN_LY. Response dùng ApiResponse; page bắt đầu từ 0, size tối đa 100. ",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{staff_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"variantId\": 1,\n  \"reason\": \"Nhập giá trị\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "PATCH /api/inventory/{variantId}/threshold",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/inventory/{{variant_id}}/threshold",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "inventory",
+                "{{variant_id}}",
+                "threshold"
+              ],
+              "query": []
+            },
+            "description": "Yêu cầu JWT. Vai trò: NHAN_VIEN, QUAN_LY. Response dùng ApiResponse; page bắt đầu từ 0, size tối đa 100. ",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{staff_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"threshold\": 5\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "GET /api/inventory",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/inventory",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "inventory"
+              ],
+              "query": [
+                {
+                  "key": "lowStock",
+                  "value": "False",
+                  "disabled": false
+                },
+                {
+                  "key": "page",
+                  "value": "0",
+                  "disabled": false
+                },
+                {
+                  "key": "size",
+                  "value": "20",
+                  "disabled": false
+                }
+              ]
+            },
+            "description": "Yêu cầu JWT. Vai trò: NHAN_VIEN, QUAN_LY. Response dùng ApiResponse; page bắt đầu từ 0, size tối đa 100. ",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{staff_token}}",
+                  "type": "string"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /api/inventory/{variantId}",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/inventory/{{variant_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "inventory",
+                "{{variant_id}}"
+              ],
+              "query": []
+            },
+            "description": "Yêu cầu JWT. Vai trò: NHAN_VIEN, QUAN_LY. Response dùng ApiResponse; page bắt đầu từ 0, size tối đa 100. ",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{staff_token}}",
+                  "type": "string"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /api/inventory/{variantId}/history",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/inventory/{{variant_id}}/history",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "inventory",
+                "{{variant_id}}",
+                "history"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "0",
+                  "disabled": false
+                },
+                {
+                  "key": "size",
+                  "value": "20",
+                  "disabled": false
+                }
+              ]
+            },
+            "description": "Yêu cầu JWT. Vai trò: NHAN_VIEN, QUAN_LY. Response dùng ApiResponse; page bắt đầu từ 0, size tối đa 100. ",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{staff_token}}",
+                  "type": "string"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "PAYMENTS",
+      "item": [
+        {
+          "name": "POST /api/admin/payments/{id}/confirm",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/admin/payments/{{payment_id}}/confirm",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "payments",
+                "{{payment_id}}",
+                "confirm"
+              ],
+              "query": []
+            },
+            "description": "Yêu cầu JWT. Vai trò: NHAN_VIEN, QUAN_LY. Response dùng ApiResponse; page bắt đầu từ 0, size tối đa 100. ",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{staff_token}}",
+                  "type": "string"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /api/payments/{id}",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/payments/{{payment_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "payments",
+                "{{payment_id}}"
+              ],
+              "query": []
+            },
+            "description": "Yêu cầu JWT. Vai trò: KHACH_HANG. Response dùng ApiResponse; page bắt đầu từ 0, size tối đa 100. ",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{customer_token}}",
+                  "type": "string"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /api/admin/payments",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/admin/payments",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "payments"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "0",
+                  "disabled": false
+                },
+                {
+                  "key": "size",
+                  "value": "20",
+                  "disabled": false
+                }
+              ]
+            },
+            "description": "Yêu cầu JWT. Vai trò: NHAN_VIEN, QUAN_LY. Response dùng ApiResponse; page bắt đầu từ 0, size tối đa 100. ",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{staff_token}}",
+                  "type": "string"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "STOREFRONT",
+      "item": [
+        {
+          "name": "GET /api/storefront/settings",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/storefront/settings",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "storefront",
+                "settings"
+              ],
+              "query": []
+            },
+            "description": "Public. Response dùng ApiResponse; page bắt đầu từ 0, size tối đa 100. ",
+            "auth": {
+              "type": "noauth"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "TRANSACTIONS",
+      "item": [
+        {
+          "name": "GET /api/admin/transactions",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/admin/transactions",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "transactions"
+              ],
+              "query": [
+                {
+                  "key": "paymentId",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "page",
+                  "value": "0",
+                  "disabled": false
+                },
+                {
+                  "key": "size",
+                  "value": "20",
+                  "disabled": false
+                }
+              ]
+            },
+            "description": "Yêu cầu JWT. Vai trò: NHAN_VIEN, QUAN_LY. Response dùng ApiResponse; page bắt đầu từ 0, size tối đa 100. ",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{staff_token}}",
+                  "type": "string"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "STATISTICS",
+      "item": [
+        {
+          "name": "GET /api/admin/statistics/revenue",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/admin/statistics/revenue",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "statistics",
+                "revenue"
+              ],
+              "query": [
+                {
+                  "key": "group",
+                  "value": "date",
+                  "disabled": false
+                },
+                {
+                  "key": "from",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "to",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "slow",
+                  "value": "False",
+                  "disabled": false
+                },
+                {
+                  "key": "page",
+                  "value": "0",
+                  "disabled": false
+                },
+                {
+                  "key": "size",
+                  "value": "20",
+                  "disabled": false
+                }
+              ]
+            },
+            "description": "Yêu cầu JWT. Vai trò: QUAN_LY. Response dùng ApiResponse; page bắt đầu từ 0, size tối đa 100. ",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{manager_token}}",
+                  "type": "string"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /api/admin/statistics/dashboard",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/admin/statistics/dashboard",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "statistics",
+                "dashboard"
+              ],
+              "query": [
+                {
+                  "key": "from",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "to",
+                  "value": "",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "Yêu cầu JWT. Vai trò: QUAN_LY. Response dùng ApiResponse; page bắt đầu từ 0, size tối đa 100. ",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{manager_token}}",
+                  "type": "string"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /api/admin/statistics/customers",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/admin/statistics/customers",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "statistics",
+                "customers"
+              ],
+              "query": [
+                {
+                  "key": "from",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "to",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "page",
+                  "value": "0",
+                  "disabled": false
+                },
+                {
+                  "key": "size",
+                  "value": "20",
+                  "disabled": false
+                }
+              ]
+            },
+            "description": "Yêu cầu JWT. Vai trò: QUAN_LY. Response dùng ApiResponse; page bắt đầu từ 0, size tối đa 100. ",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{manager_token}}",
+                  "type": "string"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "REVIEW-IMAGES",
+      "item": [
+        {
+          "name": "DELETE /api/review-images/{id}",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/review-images/{{review_image_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "review-images",
+                "{{review_image_id}}"
+              ],
+              "query": []
+            },
+            "description": "Yêu cầu JWT. Vai trò: KHACH_HANG. Response dùng ApiResponse; page bắt đầu từ 0, size tối đa 100. ",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{customer_token}}",
+                  "type": "string"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

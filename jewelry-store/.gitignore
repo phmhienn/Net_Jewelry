@@ -1,0 +1,74 @@
+# ============================================================
+# Spring Boot backend
+# Keep source code, SQL schema/seed files, Docker files, Maven wrapper scripts,
+# and .env.example committed. Ignore generated output and local secrets only.
+# ============================================================
+
+# Maven build output
+target/
+
+# Maven local/temporary files
+.mvn/timing.properties
+.mvn/wrapper/maven-wrapper.jar.tmp
+
+# Runtime uploads and local storage
+uploads/
+*.upload
+
+# Local environment secrets
+.env
+.env.*
+!.env.example
+
+# Logs
+*.log
+logs/
+
+# Java / JVM generated files
+*.class
+*.jar
+*.war
+*.ear
+*.nar
+hs_err_pid*
+replay_pid*
+
+# Test reports / coverage
+surefire-reports/
+failsafe-reports/
+jacoco.exec
+coverage/
+
+# IDE / editor
+.idea/
+.vscode/
+*.iws
+*.iml
+*.ipr
+.classpath
+.project
+.settings/
+.factorypath
+.apt_generated/
+.springBeans
+.sts4-cache/
+
+# NetBeans
+/nbproject/private/
+/nbbuild/
+/nbdist/
+/.nb-gradle/
+build/
+!**/src/main/**/build/
+!**/src/test/**/build/
+
+# OS files
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# Temporary files
+*.tmp
+*.bak
+*.orig
+HELP.md

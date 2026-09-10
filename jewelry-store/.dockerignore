@@ -1,0 +1,10 @@
+target
+uploads
+.env
+.env.*
+.git
+.idea
+*.log
+postman
+*.sql
+*.md
