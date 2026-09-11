@@ -1,14 +1,16 @@
 import { Link } from "react-router-dom";
 import { ArrowUpRight } from "lucide-react";
-import { brand, isDemo } from "../../data/config";
+import { useCatalog } from "../../context/CatalogContext";
+
 export function Footer() {
+  const { settings } = useCatalog();
   return (
     <footer className="footer">
       <div className="container footer-grid">
         <div>
           <Link className="brand" to="/">
-            {brand.name}
-            <span>{brand.descriptor}</span>
+            {settings.brandName}
+            <span>{settings.descriptor}</span>
           </Link>
           <p>
             Trang sức giản đơn.
@@ -35,18 +37,14 @@ export function Footer() {
             <br />
             Chúng tôi luôn sẵn lòng lắng nghe.
           </p>
-          <a href={`mailto:${brand.email}`} className="footer-contact">
+          <a href={`mailto:${settings.email}`} className="footer-contact">
             Liên hệ qua email <ArrowUpRight size={16} />
           </a>
         </div>
       </div>
       <div className="container footer-bottom">
         <span>© {new Date().getFullYear()} NÉT Jewelry.</span>
-        <span>
-          {isDemo
-            ? "Bản trải nghiệm · Sản phẩm và giao dịch minh họa"
-            : "Đẹp từ những điều giản đơn."}
-        </span>
+        <span>Đẹp từ những điều giản đơn.</span>
         <span>Tiếng Việt · VND</span>
       </div>
     </footer>

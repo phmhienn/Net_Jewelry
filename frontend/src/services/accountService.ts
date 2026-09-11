@@ -1,17 +1,35 @@
 import { api } from "./api";
-import { isDemo } from "../data/config";
 import type { Address } from "../types";
-import { readLocal, writeLocal } from "../utils/storage";
+import { type BackendAddress, mapAddress } from "./backendTypes";
+
+const toBody = (address: Address) => ({
+  name: address.name,
+  phone: address.phone,
+  city: address.city,
+  district: address.district,
+  ward: address.ward || "",
+  street: address.street,
+  defaultAddress: address.defaultAddress ?? true,
+});
+
 export const accountService = {
-  async getAddress(email: string): Promise<Address | null> {
-    return isDemo
-      ? readLocal(`net-address:${email.toLowerCase()}`, null)
-      : (await api.get<Address | null>("/account/address")).data;
+  async addresses(): Promise<Address[]> {
+    return (await api.get<BackendAddress[]>("/addresses")).data.map(mapAddress);
   },
-  async saveAddress(email: string, address: Address): Promise<Address> {
-    if (!isDemo)
-      return (await api.put<Address>("/account/address", address)).data;
-    writeLocal(`net-address:${email.toLowerCase()}`, address);
-    return address;
+  async getAddress(): Promise<Address | null> {
+    const list = await this.addresses();
+    return list.find((address) => address.defaultAddress) ?? list[0] ?? null;
+  },
+  async saveAddress(address: Address): Promise<Address> {
+    const request = address.id
+      ? api.put<BackendAddress>(`/addresses/${encodeURIComponent(address.id)}`, toBody(address))
+      : api.post<BackendAddress>("/addresses", toBody(address));
+    return mapAddress((await request).data);
+  },
+  async removeAddress(id: string) {
+    await api.delete(`/addresses/${encodeURIComponent(id)}`);
+  },
+  async setDefault(id: string) {
+    await api.put(`/addresses/${encodeURIComponent(id)}/default`);
   },
 };

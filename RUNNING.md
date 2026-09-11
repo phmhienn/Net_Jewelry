@@ -7,7 +7,7 @@ Cài Docker Desktop và bật Linux containers. Không cần Java/Maven/Node/MyS
 Mở PowerShell:
 
 ```powershell
-Set-Location 'C:\Users\Penguin\Downloads\jewelry-store\jewelry-store'
+Set-Location 'C:\Users\Penguin\Downloads\jewelry-store\backend'
 docker version
 docker compose version
 ```
@@ -73,9 +73,9 @@ Dùng cùng `-p jewelry-store` trong các lệnh sau. Nếu port đang được 
 
 | Thành phần | Địa chỉ mặc định |
 |---|---|
-| Website React/Nginx | http://localhost:5173 |
-| Backend | http://localhost:8080 |
-| Swagger | http://localhost:8080/swagger-ui.html |
+| Website React/Nginx | http://127.0.0.1:5173 |
+| Backend | http://127.0.0.1:8080 |
+| Swagger | http://127.0.0.1:8080/swagger-ui.html |
 | MySQL trên máy | 127.0.0.1:3308 |
 
 Backend dùng mysql:3306 trong mạng Docker và DDL_AUTO=validate. Nginx proxy /api và /uploads sang backend. MySQL và uploads lưu trong named volumes độc lập với MySQL cài trên Windows.
@@ -84,18 +84,18 @@ MySQL chỉ import init.sql khi volume mới; up/restart không cập nhật sch
 
 ## 5. Nhập dữ liệu và sử dụng
 
-1. Cả khách hàng, nhân viên và quản lý dùng trang http://localhost:5173/login. Nhập email hoặc tên đăng nhập và mật khẩu. Với Swagger/Postman, dùng POST /api/auth/login, body {"identifier":"email-hoac-ten-dang-nhap","password":"mat-khau-cua-ban"}.
+1. Cả khách hàng, nhân viên và quản lý dùng trang http://127.0.0.1:5173/login. Nhập email hoặc tên đăng nhập và mật khẩu. Với Swagger/Postman, dùng POST /api/auth/login, body {"identifier":"email-hoac-ten-dang-nhap","password":"mat-khau-cua-ban"}.
 2. Lấy accessToken và Authorize bằng Bearer token.
 3. Kiểm tra danh mục mặc định, tạo thương hiệu → sản phẩm → biến thể → nhập tồn kho. Thêm URL ảnh hoặc upload qua API.
-4. Quản lý có thể thêm mã giảm giá, banner và nội dung giới thiệu/chính sách/FAQ/liên hệ theo [API.md](jewelry-store/API.md).
+4. Quản lý có thể thêm mã giảm giá, banner và nội dung giới thiệu/chính sách/FAQ/liên hệ theo [API.md](backend/API.md).
 5. Khách đăng ký trên website → thêm giỏ → chọn dòng cần mua → áp mã nếu có → đặt COD.
 6. Nhân viên xử lý đơn qua API: CHO_XAC_NHAN → DA_XAC_NHAN → DANG_XU_LY → DANG_GIAO_HANG → HOAN_THANH. Khi hoàn tất, ghi nhận tiền COD. Khách không tự xác nhận thanh toán.
 
-React có khu vực **Vận hành** tại http://localhost:5173/management cho nhân viên và quản lý. Nhân viên xử lý đơn, sản phẩm, kho, đánh giá và thanh toán; quản lý có thêm danh mục, thương hiệu, giá vàng, khách hàng, nhân viên, mã giảm giá, banner và nội dung trang. Không có sản phẩm/nội dung trong DB thì website hiển thị trạng thái trống. Không có lựa chọn thanh toán giả lập hoặc dữ liệu dự phòng.
+React có khu vực **Vận hành** tại http://127.0.0.1:5173/management cho nhân viên và quản lý. Nhân viên xử lý đơn, sản phẩm, kho, đánh giá và thanh toán; quản lý có thêm danh mục, thương hiệu, giá vàng, khách hàng, nhân viên, mã giảm giá, banner và nội dung trang. Không có sản phẩm/nội dung trong DB thì website hiển thị trạng thái trống. Không có lựa chọn thanh toán giả lập hoặc dữ liệu dự phòng.
 
 ### Dữ liệu kiểm tra tùy chọn
 
-File [demo-data.sql](jewelry-store/demo-data.sql) thêm dữ liệu kiểm tra cho toàn bộ luồng chính: ba tài khoản, sản phẩm, biến thể, tồn kho, giỏ hàng, mã giảm giá, đơn đã hoàn thành, thanh toán, giao hàng, đánh giá, banner và trang thông tin. File không có `DROP DATABASE`, `DROP TABLE` hoặc thay đổi schema; các bản ghi của nó dùng tiền tố `DEMO`/`demo_` và có thể import lại.
+File [demo-data.sql](backend/demo-data.sql) thêm dữ liệu kiểm tra cho toàn bộ luồng chính: ba tài khoản, sản phẩm, biến thể, tồn kho, giỏ hàng, mã giảm giá, đơn đã hoàn thành, thanh toán, giao hàng, đánh giá, banner và trang thông tin. File không có `DROP DATABASE`, `DROP TABLE` hoặc thay đổi schema; các bản ghi của nó dùng tiền tố `DEMO`/`demo_` và có thể import lại.
 
 Chỉ chạy lệnh này khi bạn muốn thêm dữ liệu kiểm tra vào database Docker đang chạy:
 
@@ -121,7 +121,7 @@ SOURCE /checks/verify-data.sql;
 EXIT;
 ```
 
-Các dòng violations cần bằng 0. Xem [DATABASE_NOTES.md](jewelry-store/DATABASE_NOTES.md) để biết các thay đổi và giới hạn của schema.
+Các dòng violations cần bằng 0. Xem [DATABASE_NOTES.md](backend/DATABASE_NOTES.md) để biết các thay đổi và giới hạn của schema.
 
 ## 7. Quản lý stack
 
@@ -136,7 +136,7 @@ docker compose -p jewelry-store down
 
 `down` giữ DB/ảnh. `down -v` xóa volume DB và ảnh, không dùng nếu cần giữ dữ liệu. Sửa code cần build lại; sửa .env cần up -d, không chỉ restart.
 
-Email quên mật khẩu mặc định tắt. Để kiểm tra email local, đặt RESET_MAIL_ENABLED=true và chạy `docker compose -p jewelry-store --profile mail up -d`; mở http://localhost:8025. Mailpit là công cụ phát triển, không xuất hiện trên website và không gửi email thật.
+Email quên mật khẩu mặc định tắt. Để kiểm tra email local, đặt RESET_MAIL_ENABLED=true và chạy `docker compose -p jewelry-store --profile mail up -d`; mở http://127.0.0.1:8025. Mailpit là công cụ phát triển, không xuất hiện trên website và không gửi email thật.
 
 ## 8. Xử lý lỗi
 
@@ -151,13 +151,13 @@ Email quên mật khẩu mặc định tắt. Để kiểm tra email local, đ�
 | Chưa có sản phẩm | Nhập sản phẩm/biến thể/tồn kho; đảm bảo sản phẩm, thương hiệu, danh mục và biến thể đang hoạt động |
 | 401 sau nâng cấp | Đăng nhập lại; cấu trúc JWT đã đổi sang tài khoản chung |
 
-Kết quả kiểm tra cuối cùng và phạm vi chưa kiểm tra được ghi ở [IMPLEMENTATION.md](jewelry-store/IMPLEMENTATION.md).
+Kết quả kiểm tra cuối cùng và phạm vi chưa kiểm tra được ghi ở [IMPLEMENTATION.md](backend/IMPLEMENTATION.md).
 
 ## Cấu trúc backend và đăng nhập chung
 
-- Source Java: `jewelry-store/src/main/java/com/example/jewelrystore/`.
+- Source Java: `backend/src/main/java/com/example/jewelrystore/`.
 - Main class: `com.example.jewelrystore.JewelryStoreApplication`. Nếu IDE giữ run configuration cũ `com.pnj.jewelry_store`, chọn lại main class này và Reload Maven.
-- Service interfaces ở `service/`, triển khai ở `service/impl/`. Chi tiết xem `jewelry-store/ARCHITECTURE.md`.
+- Service interfaces ở `service/`, triển khai ở `service/impl/`. Chi tiết xem `backend/ARCHITECTURE.md`.
 - Cả ba vai trò dùng `/login` và `/account`; quyền được lấy từ DB. Khách tự đăng ký luôn có vai trò KHACH_HANG, không tự chọn vai trò.
 - Khách: hồ sơ, đơn đã mua, địa chỉ, yêu thích. Nhân viên: hồ sơ và xử lý đơn. Quản lý: thêm thống kê cửa hàng. Các API quản lý khác vẫn dùng được qua Swagger/Postman theo phân quyền.
 - Đổi package hoặc code Java cần build lại image, không chỉ restart. Với stack hiện tại có tên `jewelry-store`, chạy trong thư mục chứa compose.yaml:
@@ -167,3 +167,6 @@ docker compose -p jewelry-store up -d --build backend frontend
 ```
 
 Dùng đúng project đang chạy (kiểm tra bằng `docker compose ls`); nếu bạn đã chọn `jewelry-v25` thì giữ tên đó. Không xóa volume hoặc import lại SQL khi cập nhật code.
+
+
+

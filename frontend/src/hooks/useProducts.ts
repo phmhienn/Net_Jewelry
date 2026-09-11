@@ -7,6 +7,7 @@ export function useProducts(query: ProductQuery) {
     items: [],
     total: 0,
     pages: 0,
+    page: 1,
   });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");

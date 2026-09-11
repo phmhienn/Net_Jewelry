@@ -1,69 +1,63 @@
 import { api } from "./api";
-import { isDemo } from "../data/config";
+import { tokenStore } from "./token";
 import type { User } from "../types";
-const demoUser: User = {
-  id: "demo",
-  name: "Minh Anh",
-  email: "demo@netjewelry.vn",
-};
-function saveSession(user: User | null) {
-  try {
-    if (user) sessionStorage.setItem("net-demo-session", JSON.stringify(user));
-    else sessionStorage.removeItem("net-demo-session");
-  } catch {
-    /* Demo session remains available in memory. */
-  }
-  return user;
-}
+import { type BackendLogin, type BackendUser, mapUser } from "./backendTypes";
+
 export const authService = {
   async me(): Promise<User | null> {
-    if (isDemo) {
-      try {
-        return JSON.parse(
-          sessionStorage.getItem("net-demo-session") ?? "null",
-        ) as User | null;
-      } catch {
-        return null;
-      }
+    if (!tokenStore.get()) return null;
+    if (tokenStore.isExpired()) {
+      tokenStore.clear();
+      return null;
     }
-    const response = await api.get<User>("/auth/me", {
-      validateStatus: (status) =>
-        status === 401 || (status >= 200 && status < 300),
-    });
-    return response.status === 401 ? null : response.data;
+
+    try {
+      return mapUser((await api.get<BackendUser>("/auth/me")).data);
+    } catch {
+      tokenStore.clear();
+      return null;
+    }
   },
-  async login(email: string, password: string): Promise<User> {
-    if (!isDemo)
-      return (await api.post<User>("/auth/login", { email, password })).data;
-    if (
-      email.trim().toLowerCase() !== demoUser.email ||
-      password !== "NetDemo123!"
-    )
-      throw new Error("Tài khoản demo: demo@netjewelry.vn / NetDemo123!");
-    saveSession(demoUser);
-    return demoUser;
+  async login(identifier: string, password: string): Promise<User> {
+    tokenStore.clear();
+    const response = (
+      await api.post<BackendLogin>("/auth/login", { identifier, password })
+    ).data;
+    tokenStore.set(response.accessToken);
+    return mapUser(response.user);
   },
-  async register(name: string, email: string, password: string): Promise<User> {
-    if (!isDemo)
-      return (await api.post<User>("/auth/register", { name, email, password }))
-        .data;
-    const user = { id: crypto.randomUUID(), name, email };
-    saveSession(user);
-    return user;
+  async register(
+    name: string,
+    email: string,
+    password: string,
+    username: string,
+  ): Promise<User> {
+    const response = (
+      await api.post<BackendLogin>("/auth/register", {
+        name,
+        email,
+        password,
+        username,
+      })
+    ).data;
+    tokenStore.set(response.accessToken);
+    return mapUser(response.user);
   },
   async logout() {
-    if (!isDemo) await api.post("/auth/logout");
-    else saveSession(null);
+    try {
+      await api.post("/auth/logout");
+    } finally {
+      tokenStore.clear();
+    }
   },
   async update(user: User): Promise<User> {
-    if (!isDemo)
-      return (
-        await api.patch<User>("/account", {
+    return mapUser(
+      (
+        await api.put<BackendUser>("/account/profile", {
           name: user.name,
-          phone: user.phone,
+          phone: user.phone || null,
         })
-      ).data;
-    saveSession(user);
-    return user;
+      ).data,
+    );
   },
 };

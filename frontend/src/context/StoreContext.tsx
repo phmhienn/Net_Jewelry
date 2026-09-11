@@ -1,52 +1,77 @@
 import {
   createContext,
-  useContext,
-  useState,
-  useEffect,
   useCallback,
+  useContext,
+  useEffect,
   useRef,
+  useState,
 } from "react";
 import type { ReactNode } from "react";
 import type { CartLine, Product, User } from "../types";
-import { isDemo } from "../data/config";
 import { errorMessage } from "../utils/format";
-import { readLocal, writeLocal } from "../utils/storage";
 import { cartService } from "../services/cartService";
 import { authService } from "../services/authService";
+import { AUTH_EXPIRED_EVENT } from "../services/api";
+import { isCustomer } from "../utils/access";
+
 interface Store {
   cart: CartLine[];
   cartLoading: boolean;
   cartError: string;
   reloadCart: () => void;
-  wishlist: string[];
   user: User | null;
   authLoading: boolean;
   setUser: (user: User | null) => void;
   addToCart: (product: Product, quantity?: number) => Promise<boolean>;
   setQuantity: (id: string, quantity: number) => Promise<boolean>;
-  clearCart: () => void;
-  toggleWishlist: (id: string) => void;
+  clearCart: () => Promise<void>;
   cartOpen: boolean;
   setCartOpen: (open: boolean) => void;
   notice: { text: string; error: boolean } | null;
   notify: (text: string, error?: boolean) => void;
 }
+
 const Context = createContext<Store | null>(null);
+
+function selectedVariant(product: Product) {
+  return (
+    product.variants?.find((variant) => variant.id === product.variantId) ??
+    product.variants?.find((variant) => variant.available > 0) ??
+    product.variants?.[0]
+  );
+}
+
 export function StoreProvider({ children }: { children: ReactNode }) {
-  const [cart, setCart] = useState<CartLine[]>(() =>
-    isDemo ? readLocal("net-cart", []) : [],
-  );
-  const [wishlist, setWishlist] = useState<string[]>(() =>
-    readLocal("net-wishlist", []),
-  );
+  const [cart, setCart] = useState<CartLine[]>([]);
   const [user, setUser] = useState<User | null>(null);
   const [cartOpen, setCartOpen] = useState(false);
   const [notice, setNotice] = useState<Store["notice"]>(null);
+  const [authLoading, setAuthLoading] = useState(true);
+  const [cartLoading, setCartLoading] = useState(false);
+  const [cartError, setCartError] = useState("");
+  const [version, setVersion] = useState(0);
+  const lock = useRef(false);
+
   const notify = useCallback(
     (text: string, error = false) => setNotice({ text, error }),
     [],
   );
-  const [authLoading, setAuthLoading] = useState(true);
+
+  const expireSession = useCallback(() => {
+    setUser(null);
+    setCart([]);
+    setCartError("");
+    setCartLoading(false);
+    setCartOpen(false);
+    setAuthLoading(false);
+  }, []);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return undefined;
+    window.addEventListener(AUTH_EXPIRED_EVENT, expireSession);
+    return () => window.removeEventListener(AUTH_EXPIRED_EVENT, expireSession);
+  }, [expireSession]);
+
   useEffect(() => {
     let active = true;
     authService
@@ -54,8 +79,8 @@ export function StoreProvider({ children }: { children: ReactNode }) {
       .then((data) => {
         if (active) setUser(data);
       })
-      .catch((e) => {
-        if (active) notify(errorMessage(e), true);
+      .catch(() => {
+        if (active) setUser(null);
       })
       .finally(() => {
         if (active) setAuthLoading(false);
@@ -63,15 +88,15 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     return () => {
       active = false;
     };
-  }, [notify]);
-  const [cartLoading, setCartLoading] = useState(!isDemo);
-  const [cartError, setCartError] = useState("");
-  const [version, setVersion] = useState(0);
-  const lock = useRef(false);
-  const currentCart = useRef(cart);
-  currentCart.current = cart;
+  }, []);
+
   useEffect(() => {
-    if (isDemo) return;
+    if (!user || !isCustomer(user)) {
+      setCart([]);
+      setCartError("");
+      setCartLoading(false);
+      return;
+    }
     let active = true;
     setCartLoading(true);
     setCartError("");
@@ -80,8 +105,8 @@ export function StoreProvider({ children }: { children: ReactNode }) {
       .then((items) => {
         if (active) setCart(items);
       })
-      .catch((e) => {
-        if (active) setCartError(errorMessage(e));
+      .catch((error) => {
+        if (active) setCartError(errorMessage(error));
       })
       .finally(() => {
         if (active) setCartLoading(false);
@@ -89,76 +114,71 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     return () => {
       active = false;
     };
-  }, [version, user?.id]);
-  useEffect(() => {
-    if (isDemo) writeLocal("net-cart", cart);
-  }, [cart]);
-  useEffect(() => {
-    writeLocal("net-wishlist", wishlist);
-  }, [wishlist]);
+  }, [version, user?.id, user?.role]);
+
   useEffect(() => {
     if (!notice) return;
     const timer = setTimeout(() => setNotice(null), 4500);
     return () => clearTimeout(timer);
   }, [notice]);
-  async function saveCart(items: CartLine[]) {
-    if (lock.current || cartLoading || cartError) {
-      notify(
-        cartError || "Giỏ hàng đang được cập nhật. Vui lòng thử lại.",
-        true,
-      );
+
+  async function mutateCart(action: () => Promise<CartLine[]>) {
+    if (!user) {
+      notify("Vui lòng đăng nhập để sử dụng giỏ hàng.", true);
       return false;
     }
+    if (!isCustomer(user)) {
+      notify("Tài khoản nhân viên/quản lý không dùng chức năng mua hàng.", true);
+      return false;
+    }
+    if (lock.current) return false;
     lock.current = true;
     setCartLoading(true);
+    setCartError("");
     try {
-      const next = await cartService.save(items);
-      currentCart.current = next;
+      const next = await action();
       setCart(next);
       return true;
-    } catch (e) {
-      notify(errorMessage(e), true);
+    } catch (error) {
+      notify(errorMessage(error), true);
       return false;
     } finally {
       lock.current = false;
       setCartLoading(false);
     }
   }
+
   async function addToCart(product: Product, quantity = 1) {
-    const items = currentCart.current;
-    const existing = items.find((item) => item.product.id === product.id);
-    if (
-      !Number.isInteger(quantity) ||
-      quantity < 1 ||
-      (existing?.quantity ?? 0) + quantity > product.stock
-    ) {
-      notify(`Chỉ còn ${product.stock} sản phẩm trong kho.`, true);
+    const variant = selectedVariant(product);
+    if (!variant?.id) {
+      notify("Sản phẩm chưa có biến thể để đặt hàng.", true);
       return false;
     }
-    const next = existing
-      ? items.map((item) =>
-          item.product.id === product.id
-            ? { ...item, quantity: item.quantity + quantity }
-            : item,
-        )
-      : [...items, { product, quantity }];
-    const success = await saveCart(next);
+    if (variant.available < quantity || product.stock < quantity) {
+      notify(`Chỉ còn ${Math.max(0, variant.available || product.stock)} sản phẩm trong kho.`, true);
+      return false;
+    }
+    const success = await mutateCart(() => cartService.add(variant.id, quantity));
     if (success) notify(`Đã thêm ${product.name} vào giỏ hàng`);
     return success;
   }
-  const setQuantity = (id: string, quantity: number) =>
-    saveCart(
-      currentCart.current
-        .map((item) =>
-          item.product.id === id
-            ? {
-                ...item,
-                quantity: Math.max(0, Math.min(item.product.stock, quantity)),
-              }
-            : item,
-        )
-        .filter((item) => item.quantity > 0),
+
+  async function setQuantity(id: string, quantity: number) {
+    const item = cart.find((line) => line.id === id || line.product.id === id);
+    if (!item?.id) return false;
+    return mutateCart(() =>
+      quantity <= 0 ? cartService.remove(item.id!) : cartService.update(item.id!, quantity),
     );
+  }
+
+  async function clearCart() {
+    if (!user || !isCustomer(user)) {
+      setCart([]);
+      return;
+    }
+    await mutateCart(() => cartService.clear());
+  }
+
   return (
     <Context.Provider
       value={{
@@ -166,22 +186,12 @@ export function StoreProvider({ children }: { children: ReactNode }) {
         cartLoading,
         cartError,
         reloadCart: () => setVersion((n) => n + 1),
-        wishlist,
         user,
         authLoading,
         setUser,
         addToCart,
         setQuantity,
-        clearCart: () => {
-          currentCart.current = [];
-          setCart([]);
-        },
-        toggleWishlist: (id) =>
-          setWishlist((ids) =>
-            ids.includes(id)
-              ? ids.filter((value) => value !== id)
-              : [...ids, id],
-          ),
+        clearCart,
         cartOpen,
         setCartOpen,
         notice,
@@ -192,6 +202,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     </Context.Provider>
   );
 }
+
 export function useStore() {
   const context = useContext(Context);
   if (!context) throw new Error("StoreProvider is required");

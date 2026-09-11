@@ -1,49 +1,46 @@
-import { ArrowUpRight, Heart, Plus } from "lucide-react";
+import { ArrowUpRight, Plus } from "lucide-react";
 import { Link } from "react-router-dom";
 import type { Product } from "../../types";
 import { money } from "../../utils/format";
 import { useStore } from "../../context/StoreContext";
+import { isCustomer } from "../../utils/access";
+import { WishlistButton } from "./WishlistButton";
+
 export function ProductCard({ product }: { product: Product }) {
-  const { addToCart, wishlist, toggleWishlist } = useStore();
-  const liked = wishlist.includes(product.id);
+  const { addToCart, user } = useStore();
   return (
     <article className="product-card">
       <div className="product-image-wrap">
         <Link to={`/products/${product.id}`} aria-label={`Xem ${product.name}`}>
-          <img
-            src={product.image}
-            alt={product.name}
-            loading="lazy"
-            width="600"
-            height="660"
-          />
+          {product.image ? (
+            <img src={product.image} alt={product.name} loading="lazy" width="600" height="660" />
+          ) : (
+            <span className="product-image-placeholder">Chưa có ảnh</span>
+          )}
         </Link>
         {product.badge && <span className="badge">{product.badge}</span>}
-        <button
-          className={`wishlist-btn icon-btn ${liked ? "selected" : ""}`}
-          aria-label={`${liked ? "Bỏ yêu thích" : "Yêu thích"} ${product.name}`}
-          aria-pressed={liked}
-          onClick={() => toggleWishlist(product.id)}
-        >
-          <Heart size={19} fill={liked ? "currentColor" : "none"} />
-        </button>
       </div>
       <div className="product-meta">
-        <span>
-          {product.category} · {product.material}
-        </span>
+        <span>{[product.category, product.material].filter(Boolean).join(" · ")}</span>
         <Link to={`/products/${product.id}`}>
           <h3>{product.name}</h3>
           <ArrowUpRight size={16} />
         </Link>
         <div className="price">
-          {money(product.price)}
+          {product.price > 0 ? money(product.price) : "Chưa cập nhật giá"}
           {product.originalPrice && <del>{money(product.originalPrice)}</del>}
         </div>
-        <button className="add-product" onClick={() => void addToCart(product)}>
-          <Plus size={16} />
-          Thêm vào giỏ
-        </button>
+        {(!user || isCustomer(user)) && (
+          <button
+            disabled={!product.stock || product.price <= 0}
+            className="add-product"
+            onClick={() => void addToCart(product)}
+          >
+            <Plus size={16} />
+            {product.price <= 0 ? "Chưa thể đặt hàng" : product.stock ? "Thêm vào giỏ" : "Hết hàng"}
+          </button>
+        )}
+        <WishlistButton productId={product.id} />
       </div>
     </article>
   );

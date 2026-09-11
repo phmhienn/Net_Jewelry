@@ -1,27 +1,60 @@
-# Kết quả kiểm tra frontend
+# QA frontend
 
-## Build và kiểm thử tự động
+## Trạng thái hiện tại
 
-- TypeScript strict và Vite production build thành công ở từng phase.
-- 15 kiểm thử Vitest: tổng tiền/số lượng, ngưỡng phí vận chuyển, tìm kiếm không dấu, kết hợp bộ lọc, phân trang, empty result, validation địa chỉ/email, API không tự fallback sang demo, payload giỏ hàng, idempotency đơn hàng và session HTTP 401.
-- REST service tests dùng mock Axios. Chưa kiểm thử với REST server thật vì project Spring Boot chưa có controller.
+Frontend đã được kiểm tra với backend Spring Boot và MySQL chạy qua Docker Compose.
 
-## Kiểm tra trình duyệt
+## Kiểm tra tự động
 
-- Home, catalog, chi tiết và tài khoản: đo ở 320, 768, 1024, 1440px. Không tràn ngang; không có computed box-shadow, text-shadow hoặc gradient trên các trang được đo.
-- Cart và checkout: kiểm tra thêm ở 320px, không tràn ngang.
-- Ảnh hero, danh mục và sản phẩm nổi bật tải thành công.
-- Tìm kiếm `nhan` trả về 3 sản phẩm nhẫn. Bộ lọc mobile mở trong drawer, Escape đóng và trả focus về nút Bộ lọc.
-- Thumbnail đổi trạng thái và ảnh đang xem. Thêm giỏ có thông báo; tăng nhẫn từ 1 lên 2 cập nhật tổng từ 3.100.000đ lên 4.350.000đ, giảm trả về đúng tổng.
-- Checkout trống hiển thị 6 lỗi trường bắt buộc; đơn demo hợp lệ tạo thành công, giỏ được xóa và đơn xuất hiện trong lịch sử tài khoản demo.
-- Đăng nhập demo, lưu địa chỉ và điền lại địa chỉ vào checkout hoạt động. Đã kiểm tra trực quan số điện thoại và email; trường nhập vẫn giữ giá trị người dùng khi phiên đăng nhập khôi phục bất đồng bộ.
-- WebMCP `navigate_product_search`: input hợp lệ điều hướng đúng; input sai kiểu bị từ chối. Công cụ không tạo đơn hoặc thanh toán.
-- Animation CSS nằm trong 180–300ms (loading dùng chu kỳ riêng); có media query `prefers-reduced-motion: reduce` tắt transition/animation và hover transform. Chưa thay đổi cài đặt motion của hệ điều hành để kiểm thử thực tế.
-- Native dialog, label/alt, focus-visible, skip link, live region và validation đã được kiểm tra qua UI/DOM. Chưa có audit WCAG toàn diện hoặc kiểm thử screen reader chuyên dụng.
+```text
+npm test: 11/11 passed
+npm run build: passed
+```
 
-## Giới hạn trước vận hành thật
+## Kiểm tra API thật qua `http://127.0.0.1:5173/api`
 
-- Backend chưa có endpoint: auth, cart, order và địa chỉ hiện chạy demo theo biến môi trường. Không thu tiền/giao hàng thật.
-- Tài khoản đăng ký demo chỉ tồn tại trong phiên; mật khẩu không được lưu. Wishlist lưu trên thiết bị.
-- Thay ảnh minh họa bằng ảnh đúng SKU, xác nhận giá, chính sách, tồn kho, email liên hệ và tích hợp thanh toán thực tế nếu cần.
-- Backend phải tính lại giá/tồn kho/phí, phân quyền đơn hàng, quản lý cookie/CSRF/CORS và idempotency theo contract trong README.
+Các endpoint đã gọi thành công:
+
+- Public products
+- Products filter theo category ID
+- Categories
+- Brands
+- Materials
+- Customer cart
+- Customer wishlist
+- Admin products
+- Admin orders
+- Inventory
+- Admin reviews
+- Admin payments
+- Admin coupons
+- Admin banners
+- Admin contents
+- Admin dashboard statistics
+
+## Các lỗi đã sửa
+
+- Bỏ toàn bộ dữ liệu demo frontend và không fallback sang mock data.
+- Sửa login dùng email hoặc tên đăng nhập cho khách hàng, nhân viên, quản lý.
+- Xóa token cũ trước khi login để tránh request login bị dính quyền cũ.
+- Sửa URL danh mục từ `category=Nhẫn` sang `categoryId=1` để backend không trả 400.
+- Sửa dropdown danh mục tự đóng sau khi chọn.
+- Thêm icon sản phẩm yêu thích trong tài khoản.
+- Sửa quản lý đơn hàng có tìm mã đơn/ngày, chuyển trạng thái, hủy đơn chưa xác nhận và xem chi tiết sổ xuống.
+- Sửa quản lý kho có tìm kiếm SKU/tên sản phẩm và filter sắp hết hàng.
+- Sửa xử lý đánh giá chỉ còn phản hồi, bỏ nút ẩn đánh giá trong modal.
+- Sửa form thêm/sửa sản phẩm dùng dropdown danh mục/thương hiệu từ DB thay vì nhập ID thủ công.
+
+## Cần chú ý khi test thủ công
+
+- Sau khi rebuild Docker, nên refresh mạnh trình duyệt bằng `Ctrl + F5`.
+- Nếu login vẫn báo lỗi cũ, xóa storage trình duyệt:
+
+```js
+localStorage.clear()
+sessionStorage.clear()
+location.reload()
+```
+
+- Tài khoản demo `demo@netjewelry.vn` không còn dùng.
+

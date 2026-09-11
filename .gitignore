@@ -1,7 +1,7 @@
 # ============================================================
 # Jewelry Store workspace
 # Root-level ignores for local machine files and shared tooling.
-# Project-specific ignores live in frontend/.gitignore and jewelry-store/.gitignore.
+# Project-specific ignores live in frontend/.gitignore and backend/.gitignore.
 # ============================================================
 
 # Operating system
