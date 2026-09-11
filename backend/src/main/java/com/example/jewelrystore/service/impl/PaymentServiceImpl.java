@@ -8,11 +8,12 @@ import com.example.jewelrystore.entity.enums.DomainEnums.*;
 import com.example.jewelrystore.mapper.*;
 import com.example.jewelrystore.repository.*;
 import com.example.jewelrystore.security.CurrentActor;
-import com.example.jewelrystore.service.PaymentService;
+import com.example.jewelrystore.service.*;
 import com.example.jewelrystore.util.Pages;
 import java.time.Instant;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,8 +24,15 @@ public class PaymentServiceImpl implements PaymentService {
   private final ThanhToanRepository payments;
   private final DonHangRepository orders;
   private final GiaoDichRepository transactions;
+  private final ChiTietDonHangRepository orderItems;
+  private final InventoryService inventory;
+  private final CouponService coupons;
+  private final DeliveryService deliveries;
   private final PaymentMapper paymentMapper;
   private final CurrentActor actor;
+
+  @Value("${payment.bank-transfer.expire-minutes:30}")
+  private long bankTransferExpireMinutes;
 
   private ThanhToan locked(Long id) {
     // Resolve a scalar ID first: do not cache a stale payment before acquiring the order lock.
@@ -82,12 +90,52 @@ public class PaymentServiceImpl implements PaymentService {
     return PageResponse.of(payments.findAll(Pages.of(page, size)).map(paymentMapper::payment));
   }
 
-  @Transactional(readOnly = true)
   public PaymentStatusResponse statusByOrder(Long orderId) {
-    DonHang dh = com.example.jewelrystore.util.Checks.get(orders, orderId);
+    DonHang dh = lock(orders, orderId);
     if (actor.get().customer()) owner(dh.getCustomer().getId(), actor.customerId());
     ThanhToan tt = payments.findByOrderId(orderId).orElseThrow();
-    return new PaymentStatusResponse(dh.getId(), dh.getCode(), tt.getStatus(), tt.getMethod(), tt.getAmount());
+    expireBankTransferIfNeeded(dh, tt);
+    return new PaymentStatusResponse(
+        dh.getId(),
+        dh.getCode(),
+        tt.getStatus(),
+        tt.getMethod(),
+        tt.getAmount(),
+        expiresAt(dh, tt),
+        tt.getStatus() == PaymentStatus.FAILED && dh.getStatus() == OrderStatus.DA_HUY);
+  }
+
+  public void expireBankTransferIfNeeded(DonHang order, ThanhToan payment) {
+    if (bankTransferExpireMinutes <= 0) return;
+    if (payment.getMethod() != PaymentMethod.BANK_TRANSFER) return;
+    if (payment.getStatus() != PaymentStatus.PENDING) return;
+    if (order.getStatus() != OrderStatus.CHO_XAC_NHAN) return;
+    Instant expiresAt = expiresAt(order, payment);
+    if (expiresAt == null || Instant.now().isBefore(expiresAt)) return;
+
+    for (var line : orderItems.findByOrderIdOrderByVariantId(order.getId())) {
+      inventory.apply(
+          inventory.lockStock(line.getVariant().getId()),
+          0,
+          -line.getQuantity(),
+          StockAction.GIAI_PHONG,
+          "Hết hạn thanh toán QR đơn " + order.getId(),
+          order.getCustomer().getId());
+    }
+    payment.setStatus(PaymentStatus.FAILED);
+    payment.setPaidAt(null);
+    order.setStatus(OrderStatus.DA_HUY);
+    order.setCancelledAt(Instant.now());
+    order.setCancelReason("Tự động hủy do quá hạn thanh toán QR");
+    coupons.release(order);
+    deliveries.cancel(order);
+  }
+
+  private Instant expiresAt(DonHang order, ThanhToan payment) {
+    if (bankTransferExpireMinutes <= 0 || payment.getMethod() != PaymentMethod.BANK_TRANSFER) {
+      return null;
+    }
+    return order.getDate().plusSeconds(bankTransferExpireMinutes * 60);
   }
 
   @Transactional(readOnly = true)

@@ -37,7 +37,7 @@ export const authService = {
         name,
         email,
         password,
-        username,
+        username: username || null,
       })
     ).data;
     tokenStore.set(response.accessToken);

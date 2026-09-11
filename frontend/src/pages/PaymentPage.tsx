@@ -19,13 +19,12 @@ export default function PaymentPage({ success = false }: { success?: boolean }) 
   const [order, setOrder] = useState<Order | null>(initialOrder);
   const [status, setStatus] = useState<PaymentStatus | null>(null);
   const [loading, setLoading] = useState(!initialOrder && !!orderId && !success);
-  const [checking, setChecking] = useState(false);
   const [error, setError] = useState("");
+  const [now, setNow] = useState(Date.now());
   const mounted = useRef(true);
 
   const checkStatus = useCallback(async () => {
     if (!orderId) return;
-    setChecking(true);
     setError("");
     try {
       const next = await paymentService.status(orderId);
@@ -34,12 +33,11 @@ export default function PaymentPage({ success = false }: { success?: boolean }) 
       if (next.paymentStatus === "CONFIRMED") {
         navigate("/payment/success", { replace: true, state: { status: next, order } });
       } else if (next.paymentStatus === "FAILED") {
-        setError("Thanh toán không thành công. Vui lòng liên hệ cửa hàng để được hỗ trợ.");
+        setError(next.expired ? "Mã QR đã hết hạn. Đơn hàng đã được tự động hủy." : "Thanh toán không thành công. Vui lòng liên hệ cửa hàng để được hỗ trợ.");
       }
     } catch (err) {
       if (mounted.current) setError(errorMessage(err));
     } finally {
-      if (mounted.current) setChecking(false);
     }
   }, [navigate, order, orderId]);
 
@@ -59,6 +57,12 @@ export default function PaymentPage({ success = false }: { success?: boolean }) 
     const timer = window.setInterval(() => void checkStatus(), 4000);
     return () => window.clearInterval(timer);
   }, [checkStatus, orderId, success]);
+
+  useEffect(() => {
+    if (success) return undefined;
+    const timer = window.setInterval(() => setNow(Date.now()), 1000);
+    return () => window.clearInterval(timer);
+  }, [success]);
 
   if (authLoading) return <div className="container page"><Loading count={1} /></div>;
   if (!user) return <Navigate to="/login" replace state={{ from: `${location.pathname}${location.search}` }} />;
@@ -81,11 +85,15 @@ export default function PaymentPage({ success = false }: { success?: boolean }) 
 
   if (loading) return <div className="container page"><Loading count={2} /></div>;
   if (!order) return <div className="container page"><ErrorState message={error || "Không tìm thấy thông tin thanh toán."} retry={() => window.location.reload()} /></div>;
+  const expiryMs = status?.expiresAt ? new Date(status.expiresAt).getTime() : order.date ? new Date(order.date).getTime() + 30 * 60_000 : NaN;
+  const remainingMs = Number.isFinite(expiryMs) ? Math.max(0, expiryMs - now) : 0;
+  const timeLeft = `${String(Math.floor(remainingMs / 60_000)).padStart(2, "0")}:${String(Math.floor((remainingMs % 60_000) / 1000)).padStart(2, "0")}`;
+  const expired = !!status?.expired || status?.paymentStatus === "FAILED" || remainingMs <= 0;
 
   return <div className="container page payment-page">
     <Breadcrumbs items={[{ label: "Đơn hàng", to: "/account?tab=orders" }, { label: "Thanh toán" }]} />
     {error && <p className="error-banner" role="alert">{error}</p>}
-    <SePayPayment order={order} checking={checking} onCheck={() => void checkStatus()} />
+    <SePayPayment order={order} timeLeft={timeLeft} expired={expired} />
     {status && <p className="payment-poll-note">Trạng thái hiện tại: <strong>{status.paymentStatus === "CONFIRMED" ? "Đã thanh toán" : status.paymentStatus === "FAILED" ? "Thất bại" : "Đang chờ thanh toán"}</strong></p>}
   </div>;
 }

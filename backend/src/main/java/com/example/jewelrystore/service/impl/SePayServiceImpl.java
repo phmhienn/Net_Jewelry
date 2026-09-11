@@ -11,6 +11,7 @@ import com.example.jewelrystore.exception.BadRequestException;
 import com.example.jewelrystore.repository.DonHangRepository;
 import com.example.jewelrystore.repository.GiaoDichRepository;
 import com.example.jewelrystore.repository.ThanhToanRepository;
+import com.example.jewelrystore.service.PaymentService;
 import com.example.jewelrystore.service.SePayService;
 import java.math.BigDecimal;
 import java.time.Instant;
@@ -37,6 +38,7 @@ public class SePayServiceImpl implements SePayService {
   private final DonHangRepository orders;
   private final ThanhToanRepository payments;
   private final GiaoDichRepository transactions;
+  private final PaymentService paymentService;
 
   public void processWebhook(SePayWebhookRequest request) {
     String transactionCode = transactionCode(request);
@@ -64,6 +66,7 @@ public class SePayServiceImpl implements SePayService {
     var order = orders.findByCode(orderCode).orElseThrow(() -> new BadRequestException("Không tìm thấy đơn hàng theo mã thanh toán"));
     var payment = payments.findByOrderId(order.getId()).orElseThrow(() -> new BadRequestException("Không tìm thấy thanh toán của đơn hàng"));
 
+    paymentService.expireBankTransferIfNeeded(order, payment);
     require(order.getStatus() != OrderStatus.DA_HUY, "Đơn hàng đã hủy");
     require(payment.getMethod() == PaymentMethod.BANK_TRANSFER, "Đơn hàng không dùng chuyển khoản ngân hàng");
     BigDecimal transferAmount = BigDecimal.valueOf(request.transferAmount());

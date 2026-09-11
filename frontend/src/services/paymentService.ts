@@ -8,6 +8,8 @@ interface BackendPaymentStatus {
   paymentStatus: string;
   paymentMethod: string;
   amount: number | string;
+  expiresAt?: string | null;
+  expired?: boolean;
 }
 
 export const paymentService = {
@@ -19,6 +21,8 @@ export const paymentService = {
       paymentStatus: data.paymentStatus,
       paymentMethod: data.paymentMethod,
       amount: asNumber(data.amount),
+      expiresAt: data.expiresAt,
+      expired: !!data.expired,
     };
   },
 };

@@ -105,6 +105,7 @@ SEPAY_WEBHOOK_SECRET=
 SEPAY_ACCOUNT_NUMBER=
 SEPAY_BANK_CODE=
 SEPAY_ACCOUNT_NAME=
+PAYMENT_BANK_TRANSFER_EXPIRE_MINUTES=30
 ```
 
 Không điền secret thật vào `.env.example`. Khi khách đặt hàng và chọn **Chuyển khoản ngân hàng qua SePay**, backend tạo đơn, tạo thanh toán, sinh mã dạng `ORDyyyyMMdd...`, trả thông tin VietQR gồm ngân hàng, số tài khoản, chủ tài khoản, số tiền và nội dung chuyển khoản. React chuyển sang trang `/payment/{orderId}` và polling `GET /api/orders/{orderId}/payment-status` mỗi vài giây.
@@ -128,6 +129,8 @@ https://your-ngrok-domain.ngrok-free.app/api/payment/sepay/webhook
 ```
 
 Không commit URL ngrok vào source code. Trên production, dùng URL HTTPS thật của backend, ví dụ `https://api.your-domain.com/api/payment/sepay/webhook`.
+
+Mã QR mặc định hết hạn sau 30 phút. Có thể đổi thời gian bằng biến `PAYMENT_BANK_TRANSFER_EXPIRE_MINUTES`. Khi khách chưa chuyển khoản sau thời gian này, lần kiểm tra trạng thái thanh toán kế tiếp sẽ tự hủy đơn, chuyển payment sang thất bại và giải phóng tồn kho đã giữ. Đặt giá trị `0` nếu muốn tắt cơ chế tự hết hạn.
 
 ### Dữ liệu kiểm tra tùy chọn
 

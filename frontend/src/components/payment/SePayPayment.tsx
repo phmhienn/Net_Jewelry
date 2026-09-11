@@ -1,9 +1,8 @@
-import { CheckCircle2, RefreshCw } from "lucide-react";
+import { CheckCircle2 } from "lucide-react";
 import type { Order } from "../../types";
-import { Button } from "../common/Button";
 import { money } from "../../utils/format";
 
-export function SePayPayment({ order, checking, onCheck }: { order: Order; checking: boolean; onCheck: () => void }) {
+export function SePayPayment({ order, timeLeft, expired }: { order: Order; timeLeft?: string; expired?: boolean }) {
   const instruction = order.paymentDetail?.instruction;
   return (
     <section className="sepay-card">
@@ -13,7 +12,10 @@ export function SePayPayment({ order, checking, onCheck }: { order: Order; check
           <h1>Thanh toán đơn hàng</h1>
           <p>Quét mã QR hoặc chuyển khoản đúng nội dung bên dưới để hệ thống tự xác nhận qua SePay.</p>
         </div>
-        <span className="payment-status-pill pending">Đang chờ thanh toán</span>
+        <span className={`payment-status-pill ${expired ? "failed" : "pending"}`}>{expired ? "Đã hết hạn" : "Đang chờ thanh toán"}</span>
+      </div>
+      <div className={`sepay-expiry ${expired ? "expired" : ""}`}>
+        {expired ? "Mã QR đã hết hạn. Đơn hàng đã được tự động hủy." : <>Mã QR còn hiệu lực: <strong>{timeLeft ?? "30:00"}</strong></>}
       </div>
 
       <div className="sepay-layout">
@@ -31,8 +33,7 @@ export function SePayPayment({ order, checking, onCheck }: { order: Order; check
       </div>
 
       <div className="sepay-actions">
-        <Button type="button" variant="secondary" loading={checking} onClick={onCheck}><RefreshCw size={17} />Đã thanh toán</Button>
-        <p><CheckCircle2 size={15} />Nút này chỉ kiểm tra trạng thái từ backend, không tự xác nhận thanh toán.</p>
+        <p><CheckCircle2 size={15} />Hệ thống tự kiểm tra trạng thái thanh toán qua backend và webhook SePay.</p>
       </div>
     </section>
   );

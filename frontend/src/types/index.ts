@@ -101,6 +101,8 @@ export interface PaymentStatus {
   paymentStatus: string;
   paymentMethod: string;
   amount: number;
+  expiresAt?: string | null;
+  expired?: boolean;
 }
 
 export interface Order {

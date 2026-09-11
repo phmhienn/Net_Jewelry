@@ -3728,6 +3728,29 @@ body {
   background: #f3f7fb;
   border-color: #d5e1ed;
 }
+.payment-status-pill.failed {
+  color: #a33a3a;
+  background: #fbf1f1;
+  border-color: #efd0d0;
+}
+.sepay-expiry {
+  border: 1px solid #d5e1ed;
+  background: #f8fafd;
+  border-radius: 8px;
+  color: var(--primary);
+  padding: 12px 14px;
+  margin-bottom: 22px;
+  font-size: 14px;
+}
+.sepay-expiry strong {
+  font-size: 18px;
+  letter-spacing: 0.5px;
+}
+.sepay-expiry.expired {
+  color: #a33a3a;
+  background: #fbf1f1;
+  border-color: #efd0d0;
+}
 .sepay-layout {
   display: grid;
   grid-template-columns: minmax(260px, 360px) minmax(0, 1fr);

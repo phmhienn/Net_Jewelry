@@ -8,6 +8,8 @@ import { Button } from "../components/common/Button";
 import { validEmail } from "../utils/validation";
 import { errorMessage } from "../utils/format";
 
+const usernamePattern = /^[A-Za-z0-9_.-]{3,100}$/;
+
 export default function Auth({ register = false }: { register?: boolean }) {
   const { user, setUser, notify } = useStore();
   const navigate = useNavigate();
@@ -29,7 +31,7 @@ export default function Auth({ register = false }: { register?: boolean }) {
     event.preventDefault();
     const issues: Record<string, string> = {};
     if (register && name.trim().length < 2) issues.name = "Họ tên cần ít nhất 2 ký tự.";
-    if (register && username.trim().length < 4) issues.username = "Tên đăng nhập cần ít nhất 4 ký tự.";
+    if (register && username.trim() && !usernamePattern.test(username.trim())) issues.username = "Tên đăng nhập chỉ dùng chữ, số, dấu gạch dưới, dấu chấm hoặc gạch ngang; từ 3 đến 100 ký tự.";
     if (register && !validEmail(email)) issues.email = "Vui lòng nhập email hợp lệ.";
     if (!register && !identifier.trim()) issues.identifier = "Nhập email hoặc tên đăng nhập.";
     if (password.length < 8) issues.password = "Mật khẩu cần ít nhất 8 ký tự.";
@@ -64,7 +66,7 @@ export default function Auth({ register = false }: { register?: boolean }) {
         <form onSubmit={(event) => void submit(event)} noValidate>
           {register ? <>
             <Input label="Họ và tên" autoComplete="name" value={name} error={errors.name} onChange={(e) => setName(e.target.value)} />
-            <Input label="Tên đăng nhập" autoComplete="username" value={username} error={errors.username} onChange={(e) => setUsername(e.target.value)} />
+            <Input label="Tên đăng nhập (không bắt buộc)" autoComplete="username" placeholder="Ví dụ: phamhien_01" value={username} error={errors.username} onChange={(e) => setUsername(e.target.value)} />
             <Input label="Email" type="email" autoComplete="email" value={email} error={errors.email} onChange={(e) => setEmail(e.target.value)} />
           </> : (
             <Input label="Email hoặc tên đăng nhập" autoComplete="username" value={identifier} error={errors.identifier} onChange={(e) => setIdentifier(e.target.value)} />
