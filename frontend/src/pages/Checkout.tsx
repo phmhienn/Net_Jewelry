@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
-import { Link } from "react-router-dom";
-import { Check, ArrowRight, LockKeyhole } from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
+import { Check, ArrowRight, LockKeyhole, QrCode, Truck } from "lucide-react";
 import type { Address, Order } from "../types";
 import { useStore } from "../context/StoreContext";
 import { orderService } from "../services/orderService";
@@ -15,12 +15,14 @@ import { validateAddress } from "../utils/validation";
 
 export default function Checkout() {
   const { cart, clearCart, user, cartLoading, cartError, reloadCart, notify } = useStore();
+  const navigate = useNavigate();
   const [address, setAddress] = useState<Address>({ name: user?.name ?? "", phone: user?.phone ?? "", street: "", city: "", district: "", ward: "" });
   const [note, setNote] = useState("");
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
   const [addressLoading, setAddressLoading] = useState(false);
+  const [payment, setPayment] = useState<"COD" | "BANK_TRANSFER">("COD");
   const [order, setOrder] = useState<Order | null>(null);
   const requestId = useRef(crypto.randomUUID());
   const submitted = useRef(false);
@@ -40,9 +42,13 @@ export default function Checkout() {
     setBusy(true);
     submitted.current = true;
     try {
-      const result = await orderService.create({ address, payment: "COD", note }, requestId.current.replaceAll("-", ""));
-      setOrder(result);
+      const result = await orderService.create({ address, payment, note }, requestId.current.replaceAll("-", ""));
       await clearCart();
+      if (payment === "BANK_TRANSFER") {
+        navigate(`/payment/${result.databaseId ?? result.paymentDetail?.orderId ?? result.id}`, { replace: true, state: { order: result } });
+        return;
+      }
+      setOrder(result);
       window.scrollTo(0, 0);
     } catch (e) {
       setError(errorMessage(e));
@@ -75,7 +81,7 @@ export default function Checkout() {
     <div className="container page">
       <Breadcrumbs items={[{ label: "Giỏ hàng", to: "/cart" }, { label: "Thanh toán" }]} />
       <h1 className="page-title">Hoàn tất đơn hàng</h1>
-      <p className="page-intro">Thanh toán bằng COD. Không có thanh toán ngân hàng hoặc online trong giao diện.</p>
+      <p className="page-intro">Chọn COD hoặc chuyển khoản ngân hàng qua VietQR/SePay. Website chỉ xác nhận chuyển khoản khi webhook SePay báo giao dịch hợp lệ.</p>
       <form noValidate onSubmit={(event) => void submit(event)} className="checkout-layout">
         <div>
           <section className="form-section">
@@ -106,12 +112,27 @@ export default function Checkout() {
           </section>
           <fieldset className="form-section payment-section">
             <legend><span>03</span>Phương thức thanh toán</legend>
-            <label className="payment-option"><input type="radio" name="payment" checked readOnly /><span>Thanh toán khi nhận hàng (COD)<small>Thanh toán cho đơn vị giao hàng khi nhận sản phẩm.</small></span></label>
+            <label className="payment-option">
+              <input type="radio" name="payment" checked={payment === "COD"} onChange={() => setPayment("COD")} />
+              <span className="payment-option-icon" aria-hidden="true"><Truck size={20} /></span>
+              <span>
+                Thanh toán khi nhận hàng (COD)
+                <small>Thanh toán cho đơn vị giao hàng khi nhận sản phẩm.</small>
+              </span>
+            </label>
+            <label className="payment-option">
+              <input type="radio" name="payment" checked={payment === "BANK_TRANSFER"} onChange={() => setPayment("BANK_TRANSFER")} />
+              <span className="payment-option-icon" aria-hidden="true"><QrCode size={20} /></span>
+              <span>
+                Chuyển khoản QR VietQR / SePay
+                <small>Nhận mã QR sau khi đặt hàng, chuyển đúng số tiền và nội dung để SePay tự xác nhận thanh toán.</small>
+              </span>
+            </label>
           </fieldset>
         </div>
         <div>
           <div className="checkout-products"><h2>Sản phẩm của bạn</h2>{cart.map((item) => <div className="mini-cart-item" key={item.id ?? item.product.id}>{item.product.image ? <img src={item.product.image} alt={item.product.name} /> : <span className="mini-image-placeholder" />}<div><h3>{item.product.name}</h3><p>{item.quantity} × {money(item.unitPrice ?? item.product.price)}</p></div></div>)}</div>
-          <CartSummary items={cart}>{error && <p className="error-banner" role="alert">{error}</p>}<Button className="w-full" type="submit" loading={busy}>Đặt hàng <ArrowRight size={17} /></Button><p className="secure-note"><LockKeyhole size={14} />Kiểm tra thông tin trước khi đặt hàng</p></CartSummary>
+          <CartSummary items={cart}>{error && <p className="error-banner" role="alert">{error}</p>}<Button className="w-full" type="submit" loading={busy}>{payment === "BANK_TRANSFER" ? "Tạo đơn và mở mã QR" : "Đặt hàng"} <ArrowRight size={17} /></Button><p className="secure-note"><LockKeyhole size={14} />Kiểm tra thông tin trước khi đặt hàng</p></CartSummary>
         </div>
       </form>
     </div>

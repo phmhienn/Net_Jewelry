@@ -8,4 +8,6 @@ import org.springframework.data.jpa.repository.*;
 
 public interface GiaoDichRepository extends BaseRepository<GiaoDich> {
   Page<GiaoDich> findByPaymentId(Long id, Pageable pageable);
+
+  boolean existsByCode(String code);
 }

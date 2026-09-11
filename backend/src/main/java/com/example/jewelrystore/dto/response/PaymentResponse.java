@@ -11,4 +11,5 @@ public record PaymentResponse(
     BigDecimal amount,
     PaymentMethod method,
     PaymentStatus status,
-    Instant paidAt) {}
+    Instant paidAt,
+    PaymentInstructionResponse instruction) {}

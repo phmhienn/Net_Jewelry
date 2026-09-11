@@ -16,6 +16,11 @@ public class PaymentController {
     return ApiResponse.ok(service.get(id));
   }
 
+  @GetMapping("/api/orders/{orderId}/payment-status")
+  public ApiResponse<PaymentStatusResponse> statusByOrder(@PathVariable Long orderId) {
+    return ApiResponse.ok(service.statusByOrder(orderId));
+  }
+
   @PostMapping("/api/admin/payments/{id}/confirm")
   public ApiResponse<PaymentResponse> confirm(@PathVariable Long id) {
     return ApiResponse.ok(service.confirm(id));

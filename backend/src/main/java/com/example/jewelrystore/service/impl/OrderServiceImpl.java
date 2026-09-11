@@ -47,7 +47,9 @@ public class OrderServiceImpl implements OrderService {
     require(
         key != null && key.matches("[A-Za-z0-9_-]{8,100}"),
         "Idempotency-Key phải có 8–100 ký tự chữ, số, gạch ngang");
-    require(request.payment() == PaymentMethod.COD, "Hiện chỉ hỗ trợ thanh toán khi nhận hàng");
+    require(
+        request.payment() == PaymentMethod.COD || request.payment() == PaymentMethod.BANK_TRANSFER,
+        "Hiện chỉ hỗ trợ COD hoặc chuyển khoản ngân hàng");
     var customer = lock(customers, actor.customerId());
     String requestHash = hash(json.writeValueAsString(request));
     var previous = orders.findByCustomerIdAndIdempotencyKey(customer.getId(), key);
@@ -82,7 +84,7 @@ public class OrderServiceImpl implements OrderService {
     }
     var order = new DonHang();
     order.setCustomer(customer);
-    order.setCode("DH-" + UUID.randomUUID());
+    order.setCode(nextOrderCode());
     order.setSubtotal(total);
     order.setShipping(shipping.fee(total));
     coupons.apply(order, request.couponCode());
@@ -143,6 +145,15 @@ public class OrderServiceImpl implements OrderService {
             .reduce(BigDecimal.ZERO, BigDecimal::add));
     cart.setUpdatedAt(Instant.now());
     return orderMapper.order(order);
+  }
+
+  private String nextOrderCode() {
+    String prefix = "ORD" + java.time.LocalDate.now().format(java.time.format.DateTimeFormatter.BASIC_ISO_DATE);
+    String code;
+    do {
+      code = prefix + UUID.randomUUID().toString().replace("-", "").substring(0, 10).toUpperCase(Locale.ROOT);
+    } while (orders.existsByCode(code));
+    return code;
   }
 
   @Transactional(readOnly = true)

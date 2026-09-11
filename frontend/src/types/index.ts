@@ -76,8 +76,36 @@ export interface Address {
   defaultAddress?: boolean;
 }
 
+export interface PaymentInstruction {
+  bankCode?: string;
+  accountNumber?: string;
+  accountName?: string;
+  amount: number;
+  content: string;
+  qrUrl?: string | null;
+}
+
+export interface PaymentSummary {
+  id?: string;
+  orderId?: string;
+  amount?: number;
+  method?: string;
+  status?: string;
+  paidAt?: string | null;
+  instruction?: PaymentInstruction | null;
+}
+
+export interface PaymentStatus {
+  orderId: string;
+  orderCode: string;
+  paymentStatus: string;
+  paymentMethod: string;
+  amount: number;
+}
+
 export interface Order {
   id: string;
+  databaseId?: string;
   code?: string;
   date: string;
   subtotal?: number;
@@ -88,6 +116,7 @@ export interface Order {
   items: CartLine[];
   address: Address;
   payment: string;
+  paymentDetail?: PaymentSummary | null;
   note?: string;
   delivery?: Record<string, unknown> | null;
 }

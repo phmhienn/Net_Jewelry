@@ -12,5 +12,7 @@ public interface PaymentService {
 
   PageResponse<TransactionResponse> transactions(Long paymentId, int page, int size);
 
+  PaymentStatusResponse statusByOrder(Long orderId);
+
   void completeCod(DonHang order);
 }

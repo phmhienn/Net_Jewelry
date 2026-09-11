@@ -42,7 +42,8 @@ public class SecurityConfig {
                     "/api/auth/login",
                     "/api/auth/staff/login",
                     "/api/auth/forgot-password",
-                    "/api/auth/reset-password")
+                    "/api/auth/reset-password",
+                    "/api/payment/sepay/webhook")
                 .permitAll()
                 .requestMatchers(
                     org.springframework.http.HttpMethod.GET,

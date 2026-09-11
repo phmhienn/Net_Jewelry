@@ -93,6 +93,42 @@ MySQL chỉ import init.sql khi volume mới; up/restart không cập nhật sch
 
 React có khu vực **Vận hành** tại http://127.0.0.1:5173/management cho nhân viên và quản lý. Nhân viên xử lý đơn, sản phẩm, kho, đánh giá và thanh toán; quản lý có thêm danh mục, thương hiệu, giá vàng, khách hàng, nhân viên, mã giảm giá, banner và nội dung trang. Không có sản phẩm/nội dung trong DB thì website hiển thị trạng thái trống. Không có lựa chọn thanh toán giả lập hoặc dữ liệu dự phòng.
 
+### Cấu hình SePay / VietQR
+
+Thanh toán chuyển khoản ngân hàng dùng SePay webhook để xác nhận tiền vào. Frontend chỉ hiển thị QR và kiểm tra trạng thái từ backend; không có API cho frontend tự đánh dấu đơn đã thanh toán.
+
+Thêm các biến sau vào `backend/.env` trước khi chạy Docker:
+
+```dotenv
+SEPAY_API_KEY=
+SEPAY_WEBHOOK_SECRET=
+SEPAY_ACCOUNT_NUMBER=
+SEPAY_BANK_CODE=
+SEPAY_ACCOUNT_NAME=
+```
+
+Không điền secret thật vào `.env.example`. Khi khách đặt hàng và chọn **Chuyển khoản ngân hàng qua SePay**, backend tạo đơn, tạo thanh toán, sinh mã dạng `ORDyyyyMMdd...`, trả thông tin VietQR gồm ngân hàng, số tài khoản, chủ tài khoản, số tiền và nội dung chuyển khoản. React chuyển sang trang `/payment/{orderId}` và polling `GET /api/orders/{orderId}/payment-status` mỗi vài giây.
+
+Webhook nhận tại:
+
+```text
+POST /api/payment/sepay/webhook
+```
+
+Endpoint này được permit trong Spring Security để SePay gọi server-to-server nhưng vẫn xác thực bằng chữ ký SePay. Với môi trường local, dùng URL public HTTPS qua ngrok hoặc dịch vụ tunnel tương đương, ví dụ:
+
+```powershell
+ngrok http 8080
+```
+
+Sau đó cấu hình webhook trên SePay theo URL:
+
+```text
+https://your-ngrok-domain.ngrok-free.app/api/payment/sepay/webhook
+```
+
+Không commit URL ngrok vào source code. Trên production, dùng URL HTTPS thật của backend, ví dụ `https://api.your-domain.com/api/payment/sepay/webhook`.
+
 ### Dữ liệu kiểm tra tùy chọn
 
 File [demo-data.sql](backend/demo-data.sql) thêm dữ liệu kiểm tra cho toàn bộ luồng chính: ba tài khoản, sản phẩm, biến thể, tồn kho, giỏ hàng, mã giảm giá, đơn đã hoàn thành, thanh toán, giao hàng, đánh giá, banner và trang thông tin. File không có `DROP DATABASE`, `DROP TABLE` hoặc thay đổi schema; các bản ghi của nó dùng tiền tố `DEMO`/`demo_` và có thể import lại.

@@ -464,7 +464,7 @@ class StoreApiIntegrationTest {
             request);
     assertEquals(158000, dh.get("total").asInt());
     assertEquals(32000, dh.get("discount").asInt());
-    assertTrue(dh.get("code").asText().startsWith("DH-"));
+    assertTrue(dh.get("code").asText().startsWith("ORD"));
     assertEquals(
         1,
         jdbc.queryForObject(
@@ -793,6 +793,60 @@ class StoreApiIntegrationTest {
 
   private void change(long id, String state) throws Exception {
     ok(patch("/api/admin/orders/" + id + "/status"), staffToken, Map.of("status", state));
+  }
+
+
+  private JsonNode bankOrder(String key) throws Exception {
+    add(customerToken, 1);
+    return checkout(customerToken, "BANK_TRANSFER", key);
+  }
+
+  private Reply sepay(JsonNode order, long amount, String transferType, long transactionId, boolean validSignature)
+      throws Exception {
+    String code = order.get("code").asText();
+    String body = json.writeValueAsString(Map.of(
+        "id", transactionId,
+        "gateway", "Vietcombank",
+        "transactionDate", "2026-09-11 10:00:00",
+        "accountNumber", "0123456789",
+        "code", code,
+        "content", "Thanh toan don hang " + code,
+        "transferType", transferType,
+        "transferAmount", amount,
+        "referenceCode", "FT" + transactionId));
+    return sepayRaw(body, validSignature);
+  }
+
+  private Reply sepayRaw(String body, boolean validSignature) throws Exception {
+    String timestamp = String.valueOf(Instant.now().getEpochSecond());
+    String signature = validSignature ? sepaySignature(timestamp, body) : "sha256=invalid";
+    var response =
+        mvc.perform(
+                post("/api/payment/sepay/webhook")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .header("X-SePay-Timestamp", timestamp)
+                    .header("X-SePay-Signature", signature)
+                    .content(body))
+            .andReturn()
+            .getResponse();
+    return new Reply(
+        response.getStatus(),
+        response.getContentAsString().isBlank()
+            ? json.createObjectNode()
+            : json.readTree(response.getContentAsString()));
+  }
+
+  private String sepaySignature(String timestamp, String body) {
+    try {
+      javax.crypto.Mac mac = javax.crypto.Mac.getInstance("HmacSHA256");
+      mac.init(new javax.crypto.spec.SecretKeySpec("test-sepay-secret".getBytes(java.nio.charset.StandardCharsets.UTF_8), "HmacSHA256"));
+      byte[] digest = mac.doFinal((timestamp + "." + body).getBytes(java.nio.charset.StandardCharsets.UTF_8));
+      StringBuilder hex = new StringBuilder(digest.length * 2);
+      for (byte b : digest) hex.append(String.format("%02x", b));
+      return "sha256=" + hex;
+    } catch (Exception e) {
+      throw new IllegalStateException(e);
+    }
   }
 
   private JsonNode complete() throws Exception {
@@ -1197,7 +1251,7 @@ class StoreApiIntegrationTest {
   }
 
   @Test
-  void unsupportedPaymentsAndSimulationAreUnavailable() throws Exception {
+  void onlineSimulationUnavailableAndBankTransferReturnsPaymentInstruction() throws Exception {
     add(customerToken, 1);
     assertEquals(
         400,
@@ -1206,13 +1260,15 @@ class StoreApiIntegrationTest {
                 customerToken,
                 order("ONLINE"))
             .status());
-    assertEquals(
-        400,
-        call(
-                post("/api/orders").header("Idempotency-Key", "unsupported-bank"),
-                customerToken,
-                order("BANK_TRANSFER"))
-            .status());
+    var bank = checkout(customerToken, "BANK_TRANSFER", "supported-bank");
+    assertEquals("BANK_TRANSFER", bank.get("payment").get("method").asText());
+    assertEquals("PENDING", bank.get("payment").get("status").asText());
+    assertTrue(bank.get("code").asText().startsWith("ORD"));
+    assertEquals(bank.get("code").asText(), bank.get("payment").get("instruction").get("content").asText());
+    assertEquals("VCB", bank.get("payment").get("instruction").get("bankCode").asText());
+    assertTrue(bank.get("payment").get("instruction").get("qrUrl").asText().contains("img.vietqr.io"));
+
+    add(customerToken, 1);
     var dh = checkout(customerToken, "COD", "payment-ownership");
     long paymentId = dh.get("payment").get("id").asLong();
     assertEquals(403, call(get("/api/payments/" + paymentId), otherToken, null).status());
@@ -1229,6 +1285,64 @@ class StoreApiIntegrationTest {
     assertEquals(
         400,
         call(post("/api/admin/payments/" + paymentId + "/confirm"), staffToken, null).status());
+  }
+
+  @Test
+  void sepayWebhookConfirmsValidInboundTransfer() throws Exception {
+    var order = bankOrder("sepay-valid-001");
+    var reply = sepay(order, order.get("payment").get("amount").asLong(), "in", 1001L, true);
+    assertEquals(200, reply.status());
+    var status = ok(get("/api/orders/" + order.get("id").asLong() + "/payment-status"), customerToken, null);
+    assertEquals("CONFIRMED", status.get("paymentStatus").asText());
+    assertEquals("BANK_TRANSFER", status.get("paymentMethod").asText());
+    assertEquals("DA_XAC_NHAN", ok(get("/api/orders/" + order.get("id").asLong()), customerToken, null).get("status").asText());
+    assertEquals(1, jdbc.queryForObject("select count(*) from giao_dich where ma_giao_dich_thanh_toan='SEPAY-1001'", Integer.class));
+  }
+
+  @Test
+  void sepayWebhookRejectsInvalidSignature() throws Exception {
+    var order = bankOrder("sepay-signature-001");
+    assertEquals(401, sepay(order, order.get("payment").get("amount").asLong(), "in", 1002L, false).status());
+    assertEquals("PENDING", ok(get("/api/orders/" + order.get("id").asLong() + "/payment-status"), customerToken, null).get("paymentStatus").asText());
+  }
+
+  @Test
+  void sepayWebhookRejectsInvalidAmount() throws Exception {
+    var order = bankOrder("sepay-amount-001");
+    assertEquals(400, sepay(order, order.get("payment").get("amount").asLong() - 1, "in", 1003L, true).status());
+    assertEquals("PENDING", ok(get("/api/orders/" + order.get("id").asLong() + "/payment-status"), customerToken, null).get("paymentStatus").asText());
+  }
+
+  @Test
+  void sepayWebhookIsIdempotentForDuplicateTransactions() throws Exception {
+    var order = bankOrder("sepay-duplicate-001");
+    assertEquals(200, sepay(order, order.get("payment").get("amount").asLong(), "in", 1004L, true).status());
+    assertEquals(200, sepay(order, order.get("payment").get("amount").asLong(), "in", 1004L, true).status());
+    assertEquals(1, jdbc.queryForObject("select count(*) from giao_dich where ma_giao_dich_thanh_toan='SEPAY-1004'", Integer.class));
+  }
+
+  @Test
+  void sepayWebhookRejectsUnknownOrderWithoutCreatingTransaction() throws Exception {
+    String body = json.writeValueAsString(Map.of(
+        "id", 1005,
+        "gateway", "Vietcombank",
+        "transactionDate", "2026-09-11 10:00:00",
+        "accountNumber", "0123456789",
+        "code", "ORD20991231UNKNOWN01",
+        "content", "Thanh toan ORD20991231UNKNOWN01",
+        "transferType", "in",
+        "transferAmount", 130000,
+        "referenceCode", "FT1005"));
+    assertEquals(400, sepayRaw(body, true).status());
+    assertEquals(0, jdbc.queryForObject("select count(*) from giao_dich where ma_giao_dich_thanh_toan='SEPAY-1005'", Integer.class));
+  }
+
+  @Test
+  void sepayWebhookIgnoresOutboundTransfers() throws Exception {
+    var order = bankOrder("sepay-out-001");
+    assertEquals(200, sepay(order, order.get("payment").get("amount").asLong(), "out", 1006L, true).status());
+    assertEquals("PENDING", ok(get("/api/orders/" + order.get("id").asLong() + "/payment-status"), customerToken, null).get("paymentStatus").asText());
+    assertEquals(0, jdbc.queryForObject("select count(*) from giao_dich where ma_giao_dich_thanh_toan='SEPAY-1006'", Integer.class));
   }
 
   @Test

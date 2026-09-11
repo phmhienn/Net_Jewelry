@@ -33,6 +33,9 @@ export const orderService = {
       ).data,
     );
   },
+  async get(orderId: string): Promise<Order> {
+    return mapOrder((await api.get<BackendOrder>(`/orders/${encodeURIComponent(orderId)}`)).data);
+  },
   async list(): Promise<Order[]> {
     const page = (
       await api.get<BackendPage<BackendOrder>>("/orders", {

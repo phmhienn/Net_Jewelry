@@ -9,5 +9,9 @@ import org.springframework.data.jpa.repository.*;
 public interface DonHangRepository extends BaseRepository<DonHang> {
   Optional<DonHang> findByCustomerIdAndIdempotencyKey(Long customerId, String key);
 
+  Optional<DonHang> findByCode(String code);
+
+  boolean existsByCode(String code);
+
   Page<DonHang> findByCustomerId(Long customerId, Pageable pageable);
 }

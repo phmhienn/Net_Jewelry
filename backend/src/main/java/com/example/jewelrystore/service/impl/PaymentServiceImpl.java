@@ -83,6 +83,14 @@ public class PaymentServiceImpl implements PaymentService {
   }
 
   @Transactional(readOnly = true)
+  public PaymentStatusResponse statusByOrder(Long orderId) {
+    DonHang dh = com.example.jewelrystore.util.Checks.get(orders, orderId);
+    if (actor.get().customer()) owner(dh.getCustomer().getId(), actor.customerId());
+    ThanhToan tt = payments.findByOrderId(orderId).orElseThrow();
+    return new PaymentStatusResponse(dh.getId(), dh.getCode(), tt.getStatus(), tt.getMethod(), tt.getAmount());
+  }
+
+  @Transactional(readOnly = true)
   public PageResponse<TransactionResponse> transactions(Long paymentId, int page, int size) {
     return PageResponse.of(
         (paymentId == null

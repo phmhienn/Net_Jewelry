@@ -6,6 +6,7 @@ import type {
   CategoryItem,
   Order,
   PageResult,
+  PaymentInstruction,
   Product,
   ProductVariant,
   StorefrontSettings,
@@ -110,6 +111,15 @@ export interface BackendOrderLine {
   color?: string;
 }
 
+export interface BackendPaymentInstruction {
+  bankCode?: string;
+  accountNumber?: string;
+  accountName?: string;
+  amount?: number | string;
+  content?: string;
+  qrUrl?: string | null;
+}
+
 export interface BackendPayment {
   id?: number;
   orderId?: number;
@@ -117,6 +127,7 @@ export interface BackendPayment {
   method?: string;
   status?: string;
   paidAt?: string | null;
+  instruction?: BackendPaymentInstruction | null;
 }
 
 export interface BackendOrder {
@@ -308,9 +319,36 @@ export function mapAddress(address: BackendAddress): Address {
   };
 }
 
+function mapPaymentInstruction(input: BackendPaymentInstruction | null | undefined): PaymentInstruction | null {
+  if (!input?.content) return null;
+  return {
+    bankCode: input.bankCode,
+    accountNumber: input.accountNumber,
+    accountName: input.accountName,
+    amount: asNumber(input.amount),
+    content: input.content,
+    qrUrl: input.qrUrl,
+  };
+}
+
+export function mapPayment(input: BackendPayment | null | undefined) {
+  if (!input) return null;
+  return {
+    id: input.id ? asId(input.id) : undefined,
+    orderId: input.orderId ? asId(input.orderId) : undefined,
+    amount: asNumber(input.amount),
+    method: input.method,
+    status: input.status,
+    paidAt: input.paidAt,
+    instruction: mapPaymentInstruction(input.instruction),
+  };
+}
+
 export function mapOrder(order: BackendOrder): Order {
+  const payment = mapPayment(order.payment);
   return {
     id: order.code || asId(order.id),
+    databaseId: asId(order.id),
     code: order.code,
     date: order.date,
     subtotal: asNumber(order.subtotal),
@@ -347,7 +385,8 @@ export function mapOrder(order: BackendOrder): Order {
       },
     })),
     address: mapAddress(order.address),
-    payment: order.payment?.method ?? "COD",
+    payment: payment?.method ?? "COD",
+    paymentDetail: payment,
     note: order.note,
     delivery: order.delivery,
   };

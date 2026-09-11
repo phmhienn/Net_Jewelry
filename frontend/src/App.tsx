@@ -15,6 +15,7 @@ import Account from "./pages/Account";
 import About from "./pages/About";
 import Management from "./pages/Management";
 import PasswordRecovery from "./pages/PasswordRecovery";
+import PaymentPage from "./pages/PaymentPage";
 import Information from "./pages/Information";
 import { EmptyState } from "./components/common/Feedback";
 
@@ -30,6 +31,8 @@ export default function App() {
             <Route path="wishlist" element={<CustomerRoute><Wishlist /></CustomerRoute>} />
             <Route path="cart" element={<CustomerRoute><Cart /></CustomerRoute>} />
             <Route path="checkout" element={<CustomerRoute><Checkout /></CustomerRoute>} />
+            <Route path="payment/success" element={<CustomerRoute><PaymentPage success /></CustomerRoute>} />
+            <Route path="payment/:orderId" element={<CustomerRoute><PaymentPage /></CustomerRoute>} />
             <Route path="login" element={<Auth key="login" />} />
             <Route path="register" element={<Auth key="register" register />} />
             <Route path="forgot-password" element={<PasswordRecovery />} />
