@@ -25,7 +25,6 @@ interface CatalogContextValue {
 const fallbackSettings: StorefrontSettings = {
   brandName: "NÉT",
   descriptor: "JEWELRY",
-  email: "hello@netjewelry.example",
   freeShippingThreshold: 1500000,
   shippingFee: 30000,
 };
@@ -58,9 +57,9 @@ export function CatalogProvider({ children }: { children: ReactNode }) {
       if (controller.signal.aborted) return;
       const [categoryResult, brandResult, materialResult, settingResult] = results;
       if (categoryResult.status === "fulfilled") {
-        setCategories(flatten(categoryResult.value).filter((item) => item.status !== "AN"));
+        setCategories(flatten(categoryResult.value).filter((item) => !item.status || item.status === "HOAT_DONG"));
       } else setError(errorMessage(categoryResult.reason));
-      if (brandResult.status === "fulfilled") setBrands(brandResult.value);
+      if (brandResult.status === "fulfilled") setBrands(brandResult.value.filter((item) => !item.status || item.status === "HOAT_DONG"));
       if (materialResult.status === "fulfilled") setMaterials(materialResult.value);
       if (settingResult.status === "fulfilled") setSettings(settingResult.value);
       setLoading(false);

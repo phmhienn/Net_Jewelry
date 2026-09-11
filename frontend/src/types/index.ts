@@ -161,7 +161,7 @@ export interface BrandItem {
 export interface StorefrontSettings {
   brandName: string;
   descriptor: string;
-  email: string;
+  email?: string;
   freeShippingThreshold: number;
   shippingFee: number;
 }

@@ -37,9 +37,13 @@ export function Footer() {
             <br />
             Chúng tôi luôn sẵn lòng lắng nghe.
           </p>
-          <a href={`mailto:${settings.email}`} className="footer-contact">
-            Liên hệ qua email <ArrowUpRight size={16} />
-          </a>
+          {settings.email ? (
+            <a href={`mailto:${settings.email}`} className="footer-contact">
+              Liên hệ qua email <ArrowUpRight size={16} />
+            </a>
+          ) : (
+            <span className="footer-contact muted">Email liên hệ chưa cấu hình</span>
+          )}
         </div>
       </div>
       <div className="container footer-bottom">

@@ -11,6 +11,7 @@ export function validateAddress(address: Address) {
     errors.street = "Nhập số nhà và tên đường (ít nhất 5 ký tự).";
   if (!address.city.trim()) errors.city = "Vui lòng nhập tỉnh/thành phố.";
   if (!address.district.trim())
-    errors.district = "Vui lòng nhập phường/xã hoặc quận/huyện.";
+    errors.district = "Vui lòng nhập quận/huyện.";
+  if (!address.ward?.trim()) errors.ward = "Vui lòng nhập phường/xã.";
   return errors;
 }

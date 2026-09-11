@@ -686,6 +686,9 @@ nav button:hover {
 .footer-contact {
   color: var(--primary) !important;
 }
+.footer-contact.muted {
+  color: var(--muted) !important;
+}
 .skip-link {
   position: fixed;
   left: 12px;
@@ -3018,6 +3021,13 @@ body {
 .management-heading p {
   color: var(--muted);
   line-height: 1.7;
+}
+.management-header-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+  flex-wrap: wrap;
 }
 .management-kpis {
   display: grid;

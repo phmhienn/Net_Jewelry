@@ -81,7 +81,7 @@ export default function Checkout() {
     <div className="container page">
       <Breadcrumbs items={[{ label: "Giỏ hàng", to: "/cart" }, { label: "Thanh toán" }]} />
       <h1 className="page-title">Hoàn tất đơn hàng</h1>
-      <p className="page-intro">Chọn COD hoặc chuyển khoản ngân hàng qua VietQR/SePay. Website chỉ xác nhận chuyển khoản khi webhook SePay báo giao dịch hợp lệ.</p>
+      <p className="page-intro">Chọn COD hoặc thanh toán bằng mã QR ngân hàng. Website chỉ xác nhận chuyển khoản khi SePay báo giao dịch hợp lệ.</p>
       <form noValidate onSubmit={(event) => void submit(event)} className="checkout-layout">
         <div>
           <section className="form-section">
@@ -107,7 +107,7 @@ export default function Checkout() {
               <Input label="Tỉnh / Thành phố *" autoComplete="address-level1" value={address.city} error={errors.city} onChange={(e) => update("city", e.target.value)} />
               <Input label="Quận / Huyện *" autoComplete="address-level2" value={address.district} error={errors.district} onChange={(e) => update("district", e.target.value)} />
             </div>
-            <Input label="Phường / Xã" value={address.ward ?? ""} onChange={(e) => update("ward", e.target.value)} />
+            <Input label="Phường / Xã *" value={address.ward ?? ""} error={errors.ward} onChange={(e) => update("ward", e.target.value)} />
             <div className="field"><label htmlFor="note">Ghi chú</label><textarea id="note" rows={3} value={note} onChange={(e) => setNote(e.target.value)} maxLength={500} /></div>
           </section>
           <fieldset className="form-section payment-section">
@@ -124,15 +124,15 @@ export default function Checkout() {
               <input type="radio" name="payment" checked={payment === "BANK_TRANSFER"} onChange={() => setPayment("BANK_TRANSFER")} />
               <span className="payment-option-icon" aria-hidden="true"><QrCode size={20} /></span>
               <span>
-                Chuyển khoản QR VietQR / SePay
-                <small>Nhận mã QR sau khi đặt hàng, chuyển đúng số tiền và nội dung để SePay tự xác nhận thanh toán.</small>
+                Thanh toán bằng mã QR
+                <small>Nhận mã VietQR sau khi đặt hàng, chuyển đúng số tiền và nội dung để SePay tự xác nhận thanh toán.</small>
               </span>
             </label>
           </fieldset>
         </div>
         <div>
           <div className="checkout-products"><h2>Sản phẩm của bạn</h2>{cart.map((item) => <div className="mini-cart-item" key={item.id ?? item.product.id}>{item.product.image ? <img src={item.product.image} alt={item.product.name} /> : <span className="mini-image-placeholder" />}<div><h3>{item.product.name}</h3><p>{item.quantity} × {money(item.unitPrice ?? item.product.price)}</p></div></div>)}</div>
-          <CartSummary items={cart}>{error && <p className="error-banner" role="alert">{error}</p>}<Button className="w-full" type="submit" loading={busy}>{payment === "BANK_TRANSFER" ? "Tạo đơn và mở mã QR" : "Đặt hàng"} <ArrowRight size={17} /></Button><p className="secure-note"><LockKeyhole size={14} />Kiểm tra thông tin trước khi đặt hàng</p></CartSummary>
+          <CartSummary items={cart}>{error && <p className="error-banner" role="alert">{error}</p>}<Button className="w-full" type="submit" loading={busy}>{payment === "BANK_TRANSFER" ? "Đặt hàng và mở mã QR" : "Đặt hàng"} <ArrowRight size={17} /></Button><p className="secure-note"><LockKeyhole size={14} />Kiểm tra thông tin trước khi đặt hàng</p></CartSummary>
         </div>
       </form>
     </div>

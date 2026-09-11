@@ -49,7 +49,7 @@ public class AuthServiceImpl implements AuthService {
       new org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder()
           .encode("unused-login-timing-value");
 
-  public UserResponse register(RegisterRequest request) {
+  public LoginResponse register(RegisterRequest request) {
     String email = request.email().trim().toLowerCase(java.util.Locale.ROOT);
     require(!customers.existsByEmail(email), "Email đã được sử dụng");
     password(request.password());
@@ -68,7 +68,7 @@ public class AuthServiceImpl implements AuthService {
     var cart = new GioHang();
     cart.setCustomer(kh);
     carts.save(cart);
-    return userMapper.user(kh);
+    return new LoginResponse(jwt.issue(kh, kh.getRole()), "Bearer", jwt.ttl(), userMapper.user(kh));
   }
 
   public LoginResponse login(LoginRequest request) {

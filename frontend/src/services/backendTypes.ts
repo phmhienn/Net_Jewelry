@@ -429,7 +429,7 @@ export function mapSettings(settings: BackendSettings | null | undefined): Store
   return {
     brandName: settings?.brandName || "NÉT",
     descriptor: settings?.descriptor || "JEWELRY",
-    email: settings?.email || "hello@netjewelry.example",
+    email: settings?.email || undefined,
     freeShippingThreshold: asNumber(settings?.freeShippingThreshold) || 1500000,
     shippingFee: asNumber(settings?.shippingFee) || 30000,
   };

@@ -64,6 +64,7 @@ describe("Validation checkout", () => {
     street: "123 Nguyễn Trãi",
     city: "TP Hồ Chí Minh",
     district: "Quận 1",
+    ward: "Phường Bến Nghé",
   };
 
   it("chấp nhận địa chỉ hợp lệ", () => {
@@ -83,9 +84,10 @@ describe("Validation checkout", () => {
           street: "",
           city: "",
           district: "",
+          ward: "",
         }),
       ),
-    ).toHaveLength(5);
+    ).toHaveLength(6);
   });
 
   it("từ chối email sai", () => {

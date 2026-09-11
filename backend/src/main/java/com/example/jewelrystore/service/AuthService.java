@@ -4,7 +4,7 @@ import com.example.jewelrystore.dto.request.*;
 import com.example.jewelrystore.dto.response.*;
 
 public interface AuthService {
-  UserResponse register(RegisterRequest request);
+  LoginResponse register(RegisterRequest request);
 
   LoginResponse login(LoginRequest request);
 

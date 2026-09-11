@@ -215,7 +215,7 @@ export function AddressForm() {
             <Input label="Tỉnh / Thành phố *" value={address.city} error={errors.city} onChange={(e) => update("city", e.target.value)} />
             <Input label="Quận / Huyện *" value={address.district} error={errors.district} onChange={(e) => update("district", e.target.value)} />
           </div>
-          <Input label="Phường / Xã" value={address.ward ?? ""} onChange={(e) => update("ward", e.target.value)} />
+          <Input label="Phường / Xã *" value={address.ward ?? ""} error={errors.ward} onChange={(e) => update("ward", e.target.value)} />
 
           <label className="address-default-check">
             <input
