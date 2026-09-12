@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link, Navigate, useLocation, useNavigate } from "react-router-dom";
+import { Link, Navigate, useNavigate } from "react-router-dom";
 import { ArrowRight, Eye, EyeOff } from "lucide-react";
 import { useStore } from "../context/StoreContext";
 import { authService } from "../services/authService";
@@ -13,11 +13,6 @@ const usernamePattern = /^[A-Za-z0-9_.-]{3,100}$/;
 export default function Auth({ register = false }: { register?: boolean }) {
   const { user, setUser, notify } = useStore();
   const navigate = useNavigate();
-  const location = useLocation();
-  const queryFrom = new URLSearchParams(location.search).get("from");
-  const stateFrom = typeof location.state === "object" && location.state && "from" in location.state && typeof location.state.from === "string" ? location.state.from : null;
-  const requestedRedirect = stateFrom ?? queryFrom;
-  const redirectTo = requestedRedirect?.startsWith("/") ? requestedRedirect : "/account";
   const [name, setName] = useState("");
   const [username, setUsername] = useState("");
   const [identifier, setIdentifier] = useState("");
@@ -28,7 +23,7 @@ export default function Auth({ register = false }: { register?: boolean }) {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
-  if (user) return <Navigate to={redirectTo} replace />;
+  if (user) return <Navigate to="/" replace />;
 
   async function submit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -49,7 +44,7 @@ export default function Auth({ register = false }: { register?: boolean }) {
         : await authService.login(identifier.trim(), password);
       setUser(account);
       notify(register ? "Đăng ký thành công" : "Đăng nhập thành công");
-      navigate(redirectTo, { replace: true });
+      navigate("/", { replace: true });
     } catch (e) {
       const message = errorMessage(e);
       setError(!register && (message.includes("quyền") || message.includes("đăng nhập")) ? "Thông tin đăng nhập không đúng hoặc tài khoản đã khóa." : message);

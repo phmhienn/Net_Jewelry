@@ -1,44 +1,167 @@
 # ============================================================
-# Jewelry Store workspace
-# Root-level ignores for local machine files and shared tooling.
-# Project-specific ignores live in frontend/.gitignore and backend/.gitignore.
+# Jewelry Store
+# Ignore generated files, local secrets, IDE files, caches and build output.
+# Keep source code, SQL files, Dockerfiles, compose.yaml and *.example files.
 # ============================================================
 
+# ------------------------------------------------------------
 # Operating system
+# ------------------------------------------------------------
 .DS_Store
+.AppleDouble
+.LSOverride
 Thumbs.db
 ehthumbs.db
 Desktop.ini
+$RECYCLE.BIN/
 
+# ------------------------------------------------------------
 # Editors / IDE
+# ------------------------------------------------------------
 .idea/
 .vscode/
+*.code-workspace
 *.swp
 *.swo
 *~
+*.iws
+*.iml
+*.ipr
+.classpath
+.project
+.settings/
+.factorypath
+.apt_generated/
+.springBeans
+.sts4-cache/
 
-# Local environment secrets
+# ------------------------------------------------------------
+# Local environment / secrets
+# ------------------------------------------------------------
 .env
 .env.*
 !.env.example
+!.env.*.example
 
+# ------------------------------------------------------------
 # Logs
+# ------------------------------------------------------------
 *.log
 logs/
+*.pid
+*.seed
+*.pid.lock
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+backend/.verify-run.log
 
-# Local artifacts / temporary files
+# ------------------------------------------------------------
+# Temporary / local artifacts
+# ------------------------------------------------------------
 .artifacts/
 .tmp/
 tmp/
 temp/
 *.tmp
+*.temp
 *.bak
 *.orig
+*.rej
+*.patch
+*.local
 
-# Test / coverage artifacts shared at workspace root
+# ------------------------------------------------------------
+# Node / React / Vite frontend
+# ------------------------------------------------------------
+node_modules/
+frontend/node_modules/
+dist/
+frontend/dist/
+build/
+frontend/build/
+.vite/
+frontend/.vite/
+*.tsbuildinfo
 coverage/
+frontend/coverage/
 test-results/
+frontend/test-results/
 playwright-report/
+frontend/playwright-report/
+.nyc_output/
+.cache/
+frontend/.cache/
 
-# Do not ignore source/runtime setup files such as database.sql, demo-data.sql,
-# compose.yaml, Dockerfile, package-lock.json, or .env.example.
+# ------------------------------------------------------------
+# Java / Spring Boot / Maven backend
+# ------------------------------------------------------------
+target/
+backend/target/
+.mvn/timing.properties
+.mvn/wrapper/maven-wrapper.jar.tmp
+*.class
+*.jar
+*.war
+*.ear
+*.nar
+hs_err_pid*
+replay_pid*
+surefire-reports/
+failsafe-reports/
+jacoco.exec
+backend/surefire-reports/
+backend/failsafe-reports/
+backend/jacoco.exec
+HELP.md
+
+# ------------------------------------------------------------
+# Runtime uploaded files / local storage
+# ------------------------------------------------------------
+uploads/
+backend/uploads/
+*.upload
+
+# ------------------------------------------------------------
+# Python helper script caches
+# Keep .py source files; ignore generated Python cache only.
+# ------------------------------------------------------------
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.ipynb_checkpoints/
+.venv/
+venv/
+env/
+
+# ------------------------------------------------------------
+# Docker local files
+# ------------------------------------------------------------
+docker-compose.override.yml
+compose.override.yml
+# ------------------------------------------------------------
+# Database local dumps/backups
+# ------------------------------------------------------------
+*.dump
+*.sql.gz
+*.sql.bak
+*.sqlite
+*.sqlite3
+
+# ------------------------------------------------------------
+# Keep important project files tracked
+# ------------------------------------------------------------
+!database.sql
+!backend/database.sql
+!backend/demo-data.sql
+!backend/docker/init.sql
+!**/Dockerfile
+!**/compose.yaml
+!**/docker-compose.yml
+!**/package-lock.json
+!**/README.md
+!RUNNING.md
