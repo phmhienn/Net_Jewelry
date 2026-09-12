@@ -973,6 +973,11 @@ class StoreApiIntegrationTest {
   void productCrudSearchFiltersAndPagination() throws Exception {
     var p = ok(post("/api/products"), staffToken, productBody("OTHER"));
     long id = p.get("id").asLong();
+    assertEquals(1, p.get("variants").size());
+    assertEquals("OTHER", p.get("variants").get(0).get("sku").asText());
+    assertEquals(0, p.get("variants").get(0).get("stock").asInt());
+    assertEquals(0, p.get("variants").get(0).get("available").asInt());
+    assertTrue(stocks.findByVariantId(p.get("variants").get(0).get("id").asLong()).isPresent());
     ok(put("/api/products/" + id), staffToken, productBody("OTHER"));
     assertEquals(
         1,

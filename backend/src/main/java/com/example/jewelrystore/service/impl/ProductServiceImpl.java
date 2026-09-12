@@ -133,7 +133,9 @@ public class ProductServiceImpl implements ProductService {
     sp.setWeight(request.weight());
     sp.setGemstone(request.gemstone());
     sp.setStatus(request.status());
-    return productMapper.product(products.save(sp));
+    sp = products.save(sp);
+    ensureDefaultVariantAndStock(sp);
+    return productMapper.product(sp);
   }
 
   public void deleteProduct(Long id) {
@@ -204,12 +206,41 @@ public class ProductServiceImpl implements ProductService {
     btsp.setPrice(request.price());
     btsp.setStatus(request.status() == null ? ProductStatus.DANG_BAN : request.status());
     variants.save(btsp);
-    if (id == null) {
-      var stock = new TonKho();
-      stock.setVariant(btsp);
-      stocks.save(stock);
-    }
+    ensureStock(btsp);
     return productMapper.variant(btsp);
+  }
+
+
+  private void ensureDefaultVariantAndStock(SanPham sp) {
+    if (!variants.findByProductIdOrderById(sp.getId()).isEmpty()) return;
+
+    BienTheSanPham btsp = new BienTheSanPham();
+    btsp.setProduct(sp);
+    btsp.setSku(defaultVariantSku(sp));
+    btsp.setSize(sp.getSize());
+    btsp.setColor(sp.getColor());
+    btsp.setPrice(sp.getPrice());
+    btsp.setSalePrice(sp.getSalePrice());
+    btsp.setStatus(sp.getStatus());
+    variants.save(btsp);
+    ensureStock(btsp);
+  }
+
+  private String defaultVariantSku(SanPham sp) {
+    String base = sp.getSku();
+    if (!variants.existsBySku(base)) return base;
+
+    String withSuffix = base + "-DEFAULT";
+    if (!variants.existsBySku(withSuffix)) return withSuffix;
+
+    return base + "-" + sp.getId();
+  }
+
+  private void ensureStock(BienTheSanPham btsp) {
+    if (btsp.getId() != null && stocks.findByVariantId(btsp.getId()).isPresent()) return;
+    var stock = new TonKho();
+    stock.setVariant(btsp);
+    stocks.save(stock);
   }
 
   public void deleteVariant(Long id) {
