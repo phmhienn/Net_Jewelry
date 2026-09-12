@@ -12,6 +12,8 @@ public interface DanhGiaRepository extends BaseRepository<DanhGia> {
 
   Page<DanhGia> findByProductIdAndStatus(Long productId, ReviewStatus status, Pageable page);
 
+  List<DanhGia> findByProductId(Long productId);
+
   @Query("select avg(d.stars) from DanhGia d where d.product.id=:id and d.status=:status")
   Double average(@Param("id") Long id, @Param("status") ReviewStatus status);
 

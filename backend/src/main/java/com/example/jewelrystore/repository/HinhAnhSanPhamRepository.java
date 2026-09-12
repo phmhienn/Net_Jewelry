@@ -8,4 +8,6 @@ import org.springframework.data.jpa.repository.*;
 
 public interface HinhAnhSanPhamRepository extends BaseRepository<HinhAnhSanPham> {
   List<HinhAnhSanPham> findByProductIdOrderBySortOrderAscIdAsc(Long id);
+
+  void deleteByProductId(Long id);
 }

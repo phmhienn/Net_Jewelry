@@ -31,6 +31,9 @@ public class ProductServiceImpl implements ProductService {
   private final ChiTietGioHangRepository cartItems;
   private final ChiTietDonHangRepository orderItems;
   private final LichSuKhoRepository history;
+  private final YeuThichRepository favorites;
+  private final DanhGiaRepository reviews;
+  private final HinhAnhDanhGiaRepository reviewImages;
   private final ProductMapper productMapper;
 
   @Transactional(readOnly = true)
@@ -139,7 +142,30 @@ public class ProductServiceImpl implements ProductService {
   }
 
   public void deleteProduct(Long id) {
-    lock(products, id).setStatus(ProductStatus.NGUNG_BAN);
+    SanPham sp = lock(products, id);
+    var productVariants = variants.findByProductIdOrderById(id);
+    for (var btsp : productVariants) {
+      require(
+          !orderItems.existsByVariantId(btsp.getId()),
+          "Sản phẩm đã phát sinh đơn hàng nên không thể xóa hẳn khỏi database");
+    }
+
+    for (var dg : reviews.findByProductId(id)) {
+      reviewImages.deleteByReviewId(dg.getId());
+      reviews.delete(dg);
+    }
+    images.deleteByProductId(id);
+    favorites.deleteByProductId(id);
+
+    for (var btsp : productVariants) {
+      cartItems.deleteByVariantId(btsp.getId());
+      history.deleteByVariantId(btsp.getId());
+      stocks.findByVariantId(btsp.getId()).ifPresent(stocks::delete);
+      variants.delete(btsp);
+    }
+
+    products.delete(sp);
+    products.flush();
   }
 
   @Transactional(readOnly = true)

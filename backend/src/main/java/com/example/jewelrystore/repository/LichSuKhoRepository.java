@@ -8,4 +8,6 @@ import org.springframework.data.jpa.repository.*;
 
 public interface LichSuKhoRepository extends BaseRepository<LichSuKho> {
   Page<LichSuKho> findByVariantId(Long id, Pageable pageable);
+
+  void deleteByVariantId(Long id);
 }

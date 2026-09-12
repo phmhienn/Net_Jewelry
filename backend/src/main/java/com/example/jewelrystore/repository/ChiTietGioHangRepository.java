@@ -11,5 +11,7 @@ public interface ChiTietGioHangRepository extends BaseRepository<ChiTietGioHang>
 
   boolean existsByVariantId(Long id);
 
+  void deleteByVariantId(Long id);
+
   void deleteByCartId(Long id);
 }

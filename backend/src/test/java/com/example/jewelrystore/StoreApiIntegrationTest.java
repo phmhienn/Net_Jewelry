@@ -998,7 +998,7 @@ class StoreApiIntegrationTest {
     assertEquals(400, call(get("/api/products").param("sort", "anything"), null, null).status());
     ok(delete("/api/products/" + id), staffToken, null);
     assertEquals(1, ok(get("/api/products"), null, null).get("totalElements").asInt());
-    assertEquals(2, ok(get("/api/admin/products"), staffToken, null).get("totalElements").asInt());
+    assertEquals(1, ok(get("/api/admin/products"), staffToken, null).get("totalElements").asInt());
   }
 
   @Test
