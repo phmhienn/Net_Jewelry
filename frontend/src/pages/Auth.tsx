@@ -14,7 +14,10 @@ export default function Auth({ register = false }: { register?: boolean }) {
   const { user, setUser, notify } = useStore();
   const navigate = useNavigate();
   const location = useLocation();
-  const redirectTo = typeof location.state === "object" && location.state && "from" in location.state && typeof location.state.from === "string" ? location.state.from : "/account";
+  const queryFrom = new URLSearchParams(location.search).get("from");
+  const stateFrom = typeof location.state === "object" && location.state && "from" in location.state && typeof location.state.from === "string" ? location.state.from : null;
+  const requestedRedirect = stateFrom ?? queryFrom;
+  const redirectTo = requestedRedirect?.startsWith("/") ? requestedRedirect : "/account";
   const [name, setName] = useState("");
   const [username, setUsername] = useState("");
   const [identifier, setIdentifier] = useState("");

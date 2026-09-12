@@ -26,6 +26,14 @@ describe("REST service contracts", () => {
     });
   });
 
+  it("normalizes backend root URL to the REST API prefix", async () => {
+    const { normalizeApiBaseUrl } = await import("./api");
+
+    expect(normalizeApiBaseUrl("http://127.0.0.1:8080")).toBe("http://127.0.0.1:8080/api");
+    expect(normalizeApiBaseUrl("http://127.0.0.1:8080/api")).toBe("http://127.0.0.1:8080/api");
+    expect(normalizeApiBaseUrl("/api")).toBe("/api");
+  });
+
   it("sends backend cart payload with variant id and quantity", async () => {
     const { api } = await import("./api");
     const { cartService } = await import("./cartService");

@@ -13,7 +13,7 @@ import { ManageOrders } from "../components/account/ManageOrders";
 import { ManagerStatistics } from "../components/account/ManagerStatistics";
 
 export default function Account() {
-  const { user, authLoading, setUser, notify, clearCart } = useStore();
+  const { user, authLoading, setUser, notify } = useStore();
   const location = useLocation();
   const [params, setParams] = useSearchParams();
   const [busy, setBusy] = useState(false);
@@ -40,7 +40,7 @@ export default function Account() {
         <nav className="account-nav" aria-label="Quản lý tài khoản">
           {links.map((item) => <button key={item.key} className={tab === item.key ? "active" : ""} aria-current={tab === item.key ? "page" : undefined} onClick={() => setParams({ tab: item.key })}><item.icon size={18} />{item.label}</button>)}
           {isCustomer(user) && <Link to="/wishlist" className="account-nav-link"><Heart size={18} strokeWidth={2} aria-hidden="true" />Sản phẩm yêu thích</Link>}
-          <button disabled={busy} onClick={async () => { setBusy(true); try { await authService.logout(); setUser(null); await clearCart(); notify("Đã đăng xuất"); } catch (e) { notify(errorMessage(e), true); } finally { setBusy(false); } }}><LogOut size={18} />{busy ? "Đang đăng xuất…" : "Đăng xuất"}</button>
+          <button disabled={busy} onClick={async () => { setBusy(true); try { await authService.logout(); setUser(null); notify("Đã đăng xuất"); } catch (e) { notify(errorMessage(e), true); } finally { setBusy(false); } }}><LogOut size={18} />{busy ? "Đang đăng xuất…" : "Đăng xuất"}</button>
         </nav>
         <div className="account-content">
           {tab === "manage-orders" ? <ManageOrders key={user.id} /> : tab === "statistics" ? <ManagerStatistics key={user.id} /> : tab === "orders" ? <Orders /> : tab === "addresses" ? <AddressForm /> : <ProfileForm key={user.id} />}

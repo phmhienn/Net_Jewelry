@@ -46,6 +46,8 @@ export const authService = {
   async logout() {
     try {
       await api.post("/auth/logout");
+    } catch {
+      /* JWT logout is stateless; local cleanup is enough if the token is already invalid. */
     } finally {
       tokenStore.clear();
     }
