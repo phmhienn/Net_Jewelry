@@ -22,8 +22,9 @@ public class SePayController {
   public ResponseEntity<ApiResponse<Void>> webhook(
       @RequestBody String rawBody,
       @RequestHeader(name = "X-SePay-Signature", required = false) String signature,
-      @RequestHeader(name = "X-SePay-Timestamp", required = false) String timestamp) {
-    signatureService.verify(rawBody, signature, timestamp);
+      @RequestHeader(name = "X-SePay-Timestamp", required = false) String timestamp,
+      @RequestHeader(name = "Authorization", required = false) String authorization) {
+    signatureService.verify(rawBody, signature, timestamp, authorization);
     SePayWebhookRequest request = json.readValue(rawBody, SePayWebhookRequest.class);
     sePayService.processWebhook(request);
     return ResponseEntity.ok(ApiResponse.done());

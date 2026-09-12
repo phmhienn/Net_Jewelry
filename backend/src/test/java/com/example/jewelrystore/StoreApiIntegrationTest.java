@@ -836,6 +836,22 @@ class StoreApiIntegrationTest {
             : json.readTree(response.getContentAsString()));
   }
 
+  private Reply sepayRawApiKey(String body, String apiKey) throws Exception {
+    var response =
+        mvc.perform(
+                post("/api/payment/sepay/webhook")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .header("Authorization", "Apikey " + apiKey)
+                    .content(body))
+            .andReturn()
+            .getResponse();
+    return new Reply(
+        response.getStatus(),
+        response.getContentAsString().isBlank()
+            ? json.createObjectNode()
+            : json.readTree(response.getContentAsString()));
+  }
+
   private String sepaySignature(String timestamp, String body) {
     try {
       javax.crypto.Mac mac = javax.crypto.Mac.getInstance("HmacSHA256");
@@ -1302,6 +1318,26 @@ class StoreApiIntegrationTest {
     assertEquals("BANK_TRANSFER", status.get("paymentMethod").asText());
     assertEquals("DA_XAC_NHAN", ok(get("/api/orders/" + order.get("id").asLong()), customerToken, null).get("status").asText());
     assertEquals(1, jdbc.queryForObject("select count(*) from giao_dich where ma_giao_dich_thanh_toan='SEPAY-1001'", Integer.class));
+  }
+
+
+  @Test
+  void sepayWebhookAcceptsConfiguredApiKeyAuthentication() throws Exception {
+    var order = bankOrder("sepay-apikey-001");
+    String code = order.get("code").asText();
+    String body = json.writeValueAsString(Map.of(
+        "id", 1010,
+        "gateway", "Vietcombank",
+        "transactionDate", "2026-09-11 10:00:00",
+        "accountNumber", "0123456789",
+        "code", code,
+        "content", "Thanh toan don hang " + code,
+        "transferType", "in",
+        "transferAmount", order.get("payment").get("amount").asLong(),
+        "referenceCode", "FT1010"));
+    assertEquals(200, sepayRawApiKey(body, "test-sepay-api-key").status());
+    var status = ok(get("/api/orders/" + order.get("id").asLong() + "/payment-status"), customerToken, null);
+    assertEquals("CONFIRMED", status.get("paymentStatus").asText());
   }
 
   @Test

@@ -116,7 +116,14 @@ Webhook nhận tại:
 POST /api/payment/sepay/webhook
 ```
 
-Endpoint này được permit trong Spring Security để SePay gọi server-to-server nhưng vẫn xác thực bằng chữ ký SePay. Với môi trường local, dùng URL public HTTPS qua ngrok hoặc dịch vụ tunnel tương đương, ví dụ:
+Endpoint này được permit trong Spring Security để SePay gọi server-to-server, nhưng vẫn xác thực riêng bằng SePay. Backend hỗ trợ 2 cách:
+
+- HMAC: SePay gửi `X-SePay-Timestamp` và `X-SePay-Signature`, backend kiểm tra bằng `SEPAY_WEBHOOK_SECRET`.
+- API Key: SePay gửi `Authorization: Apikey <SEPAY_API_KEY>`.
+
+Nếu SePay dashboard của bạn chọn API Key thì bắt buộc điền `SEPAY_API_KEY` đúng với key đang cấu hình trên SePay. Nếu chọn HMAC thì điền `SEPAY_WEBHOOK_SECRET` đúng secret. Sau khi sửa `.env`, phải recreate/restart backend container để biến môi trường được nạp lại.
+
+Với môi trường local, dùng URL public HTTPS qua ngrok hoặc dịch vụ tunnel tương đương, ví dụ:
 
 ```powershell
 ngrok http 8080

@@ -18,9 +18,18 @@ public class SePaySignatureServiceImpl implements SePaySignatureService {
     this.config = config;
   }
 
-  public void verify(String rawBody, String signature, String timestamp) {
+  public void verify(String rawBody, String signature, String timestamp, String authorization) {
+    boolean hasHmac = signature != null && !signature.isBlank() || timestamp != null && !timestamp.isBlank();
+    if (hasHmac) {
+      verifyHmac(rawBody, signature, timestamp);
+      return;
+    }
+    verifyApiKey(authorization);
+  }
+
+  private void verifyHmac(String rawBody, String signature, String timestamp) {
     if (config.webhookSecret().isBlank()) {
-      throw new UnauthorizedException("Webhook SePay chưa được cấu hình");
+      throw new UnauthorizedException("Webhook SePay HMAC chưa được cấu hình");
     }
     if (signature == null || timestamp == null || signature.isBlank() || timestamp.isBlank()) {
       throw new UnauthorizedException("Thiếu chữ ký SePay");
@@ -37,6 +46,19 @@ public class SePaySignatureServiceImpl implements SePaySignatureService {
     String expected = "sha256=" + hmac(timestamp.trim() + "." + rawBody, config.webhookSecret());
     if (!constantTimeEquals(expected, signature.trim())) {
       throw new UnauthorizedException("Chữ ký SePay không hợp lệ");
+    }
+  }
+
+  private void verifyApiKey(String authorization) {
+    if (config.apiKey().isBlank()) {
+      throw new UnauthorizedException("Webhook SePay API Key chưa được cấu hình");
+    }
+    if (authorization == null || !authorization.startsWith("Apikey ")) {
+      throw new UnauthorizedException("Thiếu API Key SePay");
+    }
+    String received = authorization.substring("Apikey ".length()).trim();
+    if (!constantTimeEquals(config.apiKey(), received)) {
+      throw new UnauthorizedException("API Key SePay không hợp lệ");
     }
   }
 
