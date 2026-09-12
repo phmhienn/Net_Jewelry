@@ -2,13 +2,15 @@ import { api } from "./api";
 import type { Address } from "../types";
 import { type BackendAddress, mapAddress } from "./backendTypes";
 
+const clean = (value: unknown) => String(value ?? "").trim();
+
 const toBody = (address: Address) => ({
-  name: address.name,
-  phone: address.phone,
-  city: address.city,
-  district: address.district,
-  ward: address.ward || "",
-  street: address.street,
+  name: clean(address.name),
+  phone: clean(address.phone).replace(/[\s.-]/g, ""),
+  city: clean(address.city),
+  district: clean(address.district),
+  ward: clean(address.ward),
+  street: clean(address.street),
   defaultAddress: address.defaultAddress ?? true,
 });
 

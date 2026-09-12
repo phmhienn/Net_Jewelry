@@ -89,13 +89,13 @@ export interface BackendCart {
 
 export interface BackendAddress {
   id?: number;
-  name: string;
-  phone: string;
-  city: string;
-  district: string;
-  ward?: string;
-  street: string;
-  defaultAddress?: boolean;
+  name?: string | null;
+  phone?: string | null;
+  city?: string | null;
+  district?: string | null;
+  ward?: string | null;
+  street?: string | null;
+  defaultAddress?: boolean | null;
 }
 
 export interface BackendOrderLine {
@@ -306,16 +306,18 @@ export function mapCart(cart: BackendCart): CartLine[] {
   return (cart.items ?? []).map(mapCartItem);
 }
 
+const text = (value: unknown) => String(value ?? "");
+
 export function mapAddress(address: BackendAddress): Address {
   return {
     id: address.id ? asId(address.id) : undefined,
-    name: address.name,
-    phone: address.phone,
-    city: address.city,
-    district: address.district,
-    ward: address.ward,
-    street: address.street,
-    defaultAddress: address.defaultAddress,
+    name: text(address.name),
+    phone: text(address.phone),
+    city: text(address.city),
+    district: text(address.district),
+    ward: text(address.ward),
+    street: text(address.street),
+    defaultAddress: Boolean(address.defaultAddress),
   };
 }
 
